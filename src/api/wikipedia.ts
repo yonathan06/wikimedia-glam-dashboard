@@ -37,6 +37,8 @@ const defaultOptions: Partial<FetchMediaRequestStatsOptions> = {
   granularity: "monthly",
 };
 
+export const DateFormat = 'yyyyMMddHH'
+
 export async function fetchMediaRequestStats(
   options: FetchMediaRequestStatsOptions
 ): Promise<{ ok: boolean, data: WikipediaStats }> {
@@ -49,9 +51,9 @@ export async function fetchMediaRequestStats(
     options.referrers
     }/${options.agents}/${encodeURIComponent(options.filePath)}/${
     options.granularity
-    }/${formatDate(options.start, "yyyyMMddHH")}/${formatDate(
+    }/${formatDate(options.start, DateFormat)}/${formatDate(
       options.end,
-      "yyyyMMddHH"
+      DateFormat
     )}`
   );
   const data = await response.json();
