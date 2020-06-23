@@ -41,7 +41,12 @@ export const DateFormat = 'yyyyMMddHH'
 
 export async function fetchMediaRequestStats(
   options: FetchMediaRequestStatsOptions
-): Promise<{ ok: boolean, data: WikipediaStats }> {
+  ): Promise<{ 
+    data?: WikipediaStats, 
+    error?: {
+      detail: string
+    } 
+  }> {
   options = {
     ...defaultOptions,
     ...options,
@@ -57,8 +62,12 @@ export async function fetchMediaRequestStats(
     )}`
   );
   const data = await response.json();
+  if (response.ok) {
+    return {
+      data,
+    }
+  }
   return {
-    ok: response.ok,
-    data,
+    error: data
   };
 }
