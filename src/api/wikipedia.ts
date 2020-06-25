@@ -1,4 +1,5 @@
 import formatDate from "date-fns/format";
+import sub from "date-fns/sub";
 
 type referer = "all-referers"
   | "internal"
@@ -20,15 +21,17 @@ interface FetchMediaRequestStatsOptions {
   end: Date;
 }
 
+export interface WikipediaStatsItem {
+  referer: referer,
+  "file_path": string,
+  agent: agent,
+  granularity: granularity,
+  timestamp: string,
+  requests: number
+}
+
 export interface WikipediaStats {
-  items: Array<{
-    referer: referer,
-    "file_path": string,
-    agent: agent,
-    granularity: granularity,
-    timestamp: string,
-    requests: number
-  }>
+  items: WikipediaStatsItem[]
 }
 
 const defaultOptions: Partial<FetchMediaRequestStatsOptions> = {
@@ -70,4 +73,15 @@ export async function fetchMediaRequestStats(
   return {
     error: data
   };
+}
+
+export async function fetchMediaBiweeklyStats(filePath: string) {
+  const yesterday = sub(new Date(), { days: 1 });
+  const twoWeeksAgo = sub(yesterday, { days: 13 });
+  return await fetchMediaRequestStats({
+    filePath,
+    start: new Date(twoWeeksAgo),
+    end: new Date(yesterday),
+    granularity: 'daily'
+  });
 }

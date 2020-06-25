@@ -1,4 +1,12 @@
-const MockMediaList = [
+
+export interface MediaItem {
+  title: string,
+  description?: string,
+  filePath: string,
+  date: string
+}
+
+const MockMediaList: MediaItem[] = [
   {
     title: 'Sphinx',
     filePath: '/wikipedia/commons/9/96/Sphinx_Metropolitan.jpg',
@@ -17,7 +25,7 @@ const MockMediaList = [
   }
 ]
 
-export const getOrgMediaList = () => {
+export const getInstMediaItems = async () => {
   return MockMediaList;
 }
 

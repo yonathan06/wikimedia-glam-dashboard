@@ -5,7 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import Organization from "./pages/Organization";
+import InstitutionDashboard from "./pages/Institution";
 import General from "./pages/General";
 
 function App() {
@@ -13,9 +13,9 @@ function App() {
     <Router>
       <Switch>
         <Route exact path="/">
-          <Redirect to="/org/met" />
+          <Redirect to="/inst/met" />
         </Route>
-        <Route path="/org" component={Organization}/>
+        <Route path="/inst" component={InstitutionDashboard}/>
         <Route path="/test" component={General} />
       </Switch>
     </Router>
