@@ -6,15 +6,17 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  TooltipProps,
 } from "recharts";
 import { MainStats } from "../../../api/hook";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 import { DateFormat } from "../../../api/wikipedia";
 import { useTheme } from "@material-ui/core/styles";
+import { Paper, Typography, Box } from "@material-ui/core";
 
 interface WeekChartProps {
-  stats: MainStats
+  stats: MainStats;
 }
 
 const WeekChart = ({ stats }: WeekChartProps) => {
@@ -38,33 +40,58 @@ const WeekChart = ({ stats }: WeekChartProps) => {
     return chartData;
   }, [stats]);
   return (
-    <ResponsiveContainer>
-      <LineChart
-        data={chartData}
-        margin={{
-          top: 16,
-          right: 16,
-          bottom: 0,
-          left: 0,
-        }}
-      >
-        <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
-        <YAxis stroke={theme.palette.text.secondary} />
-        <Line
-          type="monotone"
-          dataKey="current"
-          stroke={theme.palette.primary.main}
-          dot={false}
-        />
-        <Line
-          type="monotone"
-          dataKey="previous"
-          stroke={theme.palette.secondary.main}
-          dot={false}
-        />
-        <Tooltip />
-      </LineChart>
-    </ResponsiveContainer>
+    <>
+      <ResponsiveContainer>
+        <LineChart
+          data={chartData}
+          margin={{
+            top: 16,
+            right: 16,
+            bottom: 0,
+            left: 0,
+          }}
+        >
+          <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+          <YAxis stroke={theme.palette.text.secondary} />
+          <Line
+            type="monotone"
+            dataKey="current"
+            stroke={theme.palette.primary.main}
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="previous"
+            stroke={theme.palette.primary.light}
+            dot={false}
+            strokeDasharray="5 5"
+          />
+          <Tooltip
+            content={(props: TooltipProps) => {
+              if (!props.active) {
+                return null;
+              }
+              if (!props.payload || props.payload.length === 0) {
+                return null;
+              }
+              const [current, prev] = props.payload;
+
+              return (
+                <Paper>
+                  <Box p={2}>
+                    <Typography color="textSecondary">{props.label}</Typography>
+                    <Typography>
+                      <span>Views</span>
+                      <b style={{ margin: "1rem" }}>{current.value}</b>
+                    </Typography>
+                  </Box>
+                </Paper>
+              );
+            }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </>
   );
 };
 
