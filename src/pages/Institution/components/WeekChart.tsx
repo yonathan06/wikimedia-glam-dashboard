@@ -74,7 +74,7 @@ const WeekChart = ({ stats }: WeekChartProps) => {
               if (!props.payload || props.payload.length === 0) {
                 return null;
               }
-              const [current, prev] = props.payload;
+              const [current] = props.payload;
 
               return (
                 <Paper>
