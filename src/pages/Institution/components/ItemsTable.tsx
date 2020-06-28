@@ -6,17 +6,24 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Typography from "@material-ui/core/Typography";
 import { MainStats, useMediaItemsList } from "../../../api/hook";
+import sub from "date-fns/sub";
+import format from "date-fns/format";
 
 interface ItemsTableProps {
-  stats: MainStats
+  stats: MainStats;
 }
 
 const ItemsTable = ({ stats }: ItemsTableProps) => {
+  const yesterday = sub(new Date(), { days: 1 });
+  const aWeekAgo = sub(yesterday, { days: 6 });
   const { data: items } = useMediaItemsList();
   return (
     <>
       <Typography component="h2" variant="h6" color="primary" gutterBottom>
-        Daily Media Items Requests
+        Weekly Media Items Requests{" "}
+        <Typography color="textSecondary">
+          {format(aWeekAgo, "dd MMM")} - {format(yesterday, "dd MMM")}
+        </Typography>
       </Typography>
       <Table size="small">
         <TableHead>
@@ -30,7 +37,7 @@ const ItemsTable = ({ stats }: ItemsTableProps) => {
             <TableRow key={item.filePath}>
               <TableCell>{item.title}</TableCell>
               <TableCell align="right">
-                {stats.mediaItemsDaily[item.filePath]?.requests}
+                {stats.mediaItemsWeeklySum[item.filePath]}
               </TableCell>
             </TableRow>
           ))}

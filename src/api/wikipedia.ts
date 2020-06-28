@@ -59,9 +59,9 @@ export async function fetchMediaRequestStats(
     options.referrers
     }/${options.agents}/${encodeURIComponent(options.filePath)}/${
     options.granularity
-    }/${formatDate(options.start, DateFormat)}/${formatDate(
+    }/${formatDate(options.start, 'yyyMMdd')}/${formatDate(
       options.end,
-      DateFormat
+      'yyyMMdd'
     )}`
   );
   const data = await response.json();

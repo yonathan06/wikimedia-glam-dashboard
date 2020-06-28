@@ -10,6 +10,9 @@ export interface MainStats {
   mediaItemsBiweekly: {
     [filePath: string]: WikipediaStatsItem[]
   },
+  mediaItemsWeeklySum: {
+    [filePath: string]: number
+  }
   mediaItemsDaily: {
     [filePath: string]: WikipediaStatsItem | undefined
   },
@@ -19,6 +22,7 @@ export interface MainStats {
 
 const initialState: MainStats = {
   mediaItemsBiweekly: {},
+  mediaItemsWeeklySum: {},
   mediaItemsDaily: {},
   biweekly: [],
   weeklySum: 0
@@ -33,8 +37,8 @@ async function loadStats(mediaItems: MediaItem[]) {
       const { items } = data;
       const { filePath } = mediaItems[index];
       const yesterday = sub(new Date(), { days: 1 });
-      state.mediaItemsBiweekly[mediaItems[index].filePath] = items;
-      
+      state.mediaItemsBiweekly[filePath] = items;
+      state.mediaItemsWeeklySum[filePath] = 0;
       items.forEach(item => {
         const itemDate = parse(item.timestamp, DateFormat, new Date());
         if (isSameDay(yesterday, itemDate)) {
@@ -42,6 +46,7 @@ async function loadStats(mediaItems: MediaItem[]) {
         }
         if (differenceInCalendarDays(yesterday, itemDate) <= 6) {
           state.weeklySum += item.requests;
+          state.mediaItemsWeeklySum[filePath] += item.requests;
         }
         const totalBiweeklyItemIndex = state.biweekly.findIndex(totalItem => totalItem.timestamp === item.timestamp);
         if (totalBiweeklyItemIndex === -1) {
