@@ -21,7 +21,7 @@ import WeekTotal from "./components/WeekTotal";
 export default function InstitutionDashboard() {
   const drawerWidth = 240;
   const classes = useStyles({ drawerWidth });
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const { data: items } = useMediaItemsList();
   const { data: stats } = useStats(items);
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
