@@ -1,6 +1,6 @@
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import { makeStyles, Theme } from "@material-ui/core";
 
-export const useStyles = makeStyles<Theme, { drawerWidth: number }>((theme: Theme) => ({
+export const useStyles = makeStyles<Theme, { drawerWidth: number }>((theme) => ({
   root: {
     display: "flex",
   },
