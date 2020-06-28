@@ -1,12 +1,12 @@
 import { WikipediaStatsItem, fetchMediaBiweeklyStats, DateFormat } from "./wikipedia";
 import { useState, useEffect } from "react";
-import { MediaItem } from "./app";
+import { MediaItem, getInstMediaItems } from "./app";
 import sub from "date-fns/sub";
 import parse from "date-fns/parse";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 import isSameDay from "date-fns/isSameDay";
 
-export interface GlobalState {
+export interface MainStats {
   mediaItemsBiweekly: {
     [filePath: string]: WikipediaStatsItem[]
   },
@@ -17,7 +17,7 @@ export interface GlobalState {
   weeklySum: number
 }
 
-const initialState: GlobalState = {
+const initialState: MainStats = {
   mediaItemsBiweekly: {},
   mediaItemsDaily: {},
   biweekly: [],
@@ -74,3 +74,15 @@ export const useStats = (mediaItems: MediaItem[]) => {
   }, [mediaItems]);
   return { data, loading };
 }
+
+export const useMediaItemsList = () => {
+  const [data, setData] = useState<MediaItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    getInstMediaItems().then((items) => {
+      setData(items);
+      setLoading(false);
+    });
+  }, []);
+  return { data, loading };
+};
