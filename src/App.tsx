@@ -15,7 +15,7 @@ function App() {
         <Route exact path="/">
           <Redirect to="/inst/met" />
         </Route>
-        <Route path="/inst" component={InstitutionDashboard}/>
+        <Route path="/inst/:instSlug" component={InstitutionDashboard}/>
         <Route path="/test" component={General} />
       </Switch>
     </Router>
