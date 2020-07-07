@@ -20,7 +20,7 @@ const MockMediaList: MediaItem[] = [
   },
   {
     title: 'The Abduction of the Sabine Women',
-    filePath: '/wikipedia/commons/a/a8/Nicolas_Poussin_-_L%27Enlèvement_des_Sabines_%281634-5%29.jpg',
+    filePath: '/wikipedia/commons/a/a8/Nicolas_Poussin_-_L\'Enlèvement_des_Sabines_(1634-5).jpg',
     date: '1 April 2018',
   }
 ]
