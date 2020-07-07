@@ -8,10 +8,11 @@ import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
-import InstDrawer from "./components/Drawer";
+import AppDrawer from "./components/Drawer";
 import Overview from "./Overview";
 import MediaItem from "./MediaItem";
 import AppToolbar from "./components/Toolbar";
+import Settings from "./Settings";
 
 export default function InstitutionDashboard() {
   const drawerWidth = 240;
@@ -31,7 +32,7 @@ export default function InstitutionDashboard() {
           openDrawer={() => setIsDrawerOpen(true)}
         />
       </AppBar>
-      <InstDrawer
+      <AppDrawer
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         drawerWidth={drawerWidth}
@@ -41,7 +42,8 @@ export default function InstitutionDashboard() {
         <Container maxWidth="lg" className={classes.container}>
           <Switch>
             <Route exact path={path} component={Overview} />
-            <Route exact path={`${path}/file`} component={MediaItem} />
+            <Route exact path={`${path}/file/:filePath`} component={MediaItem} />
+            <Route exact path={`${path}/settings`} component={Settings} />
           </Switch>
           <Box pt={4}>
             <Typography variant="body2" color="textSecondary" align="center">

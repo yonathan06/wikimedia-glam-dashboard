@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import clsx from "clsx";
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useRouteMatch } from "react-router-dom";
 import { useTheme } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -22,12 +22,11 @@ import format from "date-fns/format";
 import parse from "date-fns/parse";
 
 const MediaItem = () => {
-  const { search } = useLocation();
+  const { params } = useRouteMatch<{ filePath: string }>();
   const theme = useTheme();
   const classes = useStyles();
 
-  const queryStrings = new URLSearchParams(search);
-  const filePath = queryStrings.get("filePath") ?? "";
+  const filePath = decodeURIComponent(params.filePath);
   const fileData = useMemo(() => getMedia(filePath), [filePath]);
   const { data } = useMediaItemStats(filePath);
   const chartData = useMemo(() => {

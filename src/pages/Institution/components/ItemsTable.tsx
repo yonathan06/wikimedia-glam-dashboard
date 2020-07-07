@@ -33,14 +33,20 @@ const ItemsTable = ({ stats }: ItemsTableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item) => (
-            <TableRow key={item.filePath}>
-              <TableCell>{item.title}</TableCell>
-              <TableCell align="right">
-                {stats.mediaItemsWeeklySum[item.filePath]}
-              </TableCell>
-            </TableRow>
-          ))}
+          {items
+            .sort(
+              (a, b) =>
+                stats.mediaItemsWeeklySum[b.filePath] -
+                stats.mediaItemsWeeklySum[a.filePath]
+            )
+            .map((item) => (
+              <TableRow key={item.filePath}>
+                <TableCell>{item.title}</TableCell>
+                <TableCell align="right">
+                  {stats.mediaItemsWeeklySum[item.filePath]}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>

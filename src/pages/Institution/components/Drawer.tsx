@@ -40,13 +40,13 @@ const useItemsStyles = makeStyles((theme) => ({
   },
   nested: {
     paddingLeft: theme.spacing(4),
-  }
+  },
 }));
 
 const CustomRouterLink = forwardRef<HTMLDivElement | null, NavLinkProps>(
   (props, ref) => (
     <div ref={ref} style={{ flexGrow: 1 }}>
-      <NavLink {...props}/>
+      <NavLink {...props} />
     </div>
   )
 );
@@ -57,7 +57,7 @@ interface DrawerProps {
   drawerWidth: number;
 }
 
-const InstDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
+const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
   const classes = useStyles({ drawerWidth });
   const listItemClasses = useItemsStyles();
   const { data: items, loading: loadingMediaItems } = useMediaItemsList();
@@ -99,7 +99,7 @@ const InstDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
             <ListItem key={item.filePath} className={listItemClasses.nested}>
               <Button
                 component={CustomRouterLink}
-                to={`/inst/met/file?filePath=${item.filePath}`}
+                to={`/inst/met/file/${encodeURIComponent(item.filePath)}`}
                 activeClassName={listItemClasses.active}
                 className={listItemClasses.button}
               >
@@ -109,8 +109,21 @@ const InstDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
           ))}
       </List>
       <Divider />
+      <List>
+        <ListItem>
+          <Button
+            exact
+            component={CustomRouterLink}
+            to={`/inst/met/settings`}
+            activeClassName={listItemClasses.active}
+            className={listItemClasses.button}
+          >
+            Settings
+          </Button>
+        </ListItem>
+      </List>
     </Drawer>
   );
 };
 
-export default InstDrawer;
+export default AppDrawer;
