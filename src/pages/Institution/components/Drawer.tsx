@@ -104,7 +104,7 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
                 className={listItemClasses.button}
                 startIcon={<ImageIcon />}
               >
-                {item.title}
+                {item.name}
               </Button>
             </ListItem>
           ))}

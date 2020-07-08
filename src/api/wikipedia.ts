@@ -1,5 +1,6 @@
 import formatDate from "date-fns/format";
 import sub from "date-fns/sub";
+import { MediaItem } from "./app";
 
 type referer = "all-referers"
   | "internal"
@@ -88,4 +89,18 @@ export async function fetchMediaBiweeklyStats(filePath: string) {
     end: new Date(yesterday),
     granularity: 'daily'
   });
+}
+
+
+export async function fetchMediaDataFromFileName(fileName: string) {
+  const response = await fetch(`https://magnus-toolserver.toolforge.org/commonsapi.php?image=${fileName}&thumbwidth=150&thumbheight=150`);
+  const text = await response.text();
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(text, 'text/xml');
+  const name = xml.querySelector('response>file>name')?.textContent as string | undefined;
+  const filePath = xml.querySelector('response>file>urls>file')?.textContent?.replace('https://upload.wikimedia.org', '') as string | undefined;
+  const uploadDate = xml.querySelector('response>file>upload_date')?.textContent as string | undefined;
+  const descriptionHTML = xml.querySelector('response>description>language[code="default"]')?.textContent as string | undefined;
+  const fileData: Partial<MediaItem> = { name, filePath, uploadDate, descriptionHTML };
+  return fileData;
 }

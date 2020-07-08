@@ -48,7 +48,7 @@ const ItemsTable = ({ stats }: ItemsTableProps) => {
         <TableBody>
           {sortItemsByStats(items, stats.mediaItemsWeeklySum).map((item) => (
             <TableRow key={item.filePath}>
-              <TableCell>{item.title}</TableCell>
+              <TableCell>{item.name}</TableCell>
               <TableCell align="right">
                 {stats.mediaItemsWeeklySum[item.filePath]}
               </TableCell>

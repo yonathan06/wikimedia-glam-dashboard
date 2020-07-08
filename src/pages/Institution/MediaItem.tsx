@@ -53,7 +53,7 @@ const MediaItem = () => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Typography component="h1" variant="h5" gutterBottom>
-          {fileData?.title}
+          {fileData?.name}
         </Typography>
       </Grid>
       <Grid item xs={12} md={8} lg={9}>

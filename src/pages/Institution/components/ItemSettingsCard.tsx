@@ -66,10 +66,10 @@ export const ItemSettingsCard = ({ item, onDelete }: ItemSettingsCardProps) => {
         <div className={classes.details}>
           <CardContent className={classes.content}>
             <Typography component="h5" variant="h5">
-              {item.title}
+              {item.name}
             </Typography>
             <Typography variant="subtitle1" color="textSecondary">
-              {item.description}
+              {item.descriptionHTML}
             </Typography>
           </CardContent>
           <CardActions>

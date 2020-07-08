@@ -1,27 +1,27 @@
 
 export interface MediaItem {
-  title: string,
-  description?: string,
+  name: string,
+  descriptionHTML?: string,
   filePath: string,
-  date: string
+  uploadDate: string
 }
 
 const MockMediaList: MediaItem[] = [
   {
-    title: 'Sphinx',
+    name: 'Sphinx',
     filePath: '/wikipedia/commons/9/96/Sphinx_Metropolitan.jpg',
-    description: 'Sphinx, Metropolitan Museum of Art, NY',
-    date: '23 October 2004',
+    descriptionHTML: 'Sphinx, Metropolitan Museum of Art, NY',
+    uploadDate: '2007-09-01T06:22:18Z',
   },
   {
-    title: 'The Burghers of Calais',
+    name: 'The Burghers of Calais',
     filePath: '/wikipedia/commons/2/21/The_Burghers_of_Calais_NY.jpg',
-    date: '23 October 2004',
+    uploadDate: '2007-04-08T06:22:18Z',
   },
   {
-    title: 'The Abduction of the Sabine Women',
+    name: 'The Abduction of the Sabine Women',
     filePath: '/wikipedia/commons/a/a8/Nicolas_Poussin_-_L\'Enlèvement_des_Sabines_(1634-5).jpg',
-    date: '1 April 2018',
+    uploadDate: '2007-01-013T06:22:18Z',
   }
 ]
 
