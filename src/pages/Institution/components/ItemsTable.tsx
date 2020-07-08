@@ -8,9 +8,22 @@ import Typography from "@material-ui/core/Typography";
 import { MainStats, useMediaItemsList } from "../../../api/hook";
 import sub from "date-fns/sub";
 import format from "date-fns/format";
+import { MediaItem } from "../../../api/app";
 
 interface ItemsTableProps {
   stats: MainStats;
+}
+
+function sortItemsByStats(
+  items: MediaItem[],
+  stats: {
+    [filePath: string]: number;
+  }
+) {
+
+  return [...items].sort((a, b) => {
+    return stats[b.filePath] - stats[a.filePath]
+  });
 }
 
 const ItemsTable = ({ stats }: ItemsTableProps) => {
@@ -33,20 +46,14 @@ const ItemsTable = ({ stats }: ItemsTableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items
-            .sort(
-              (a, b) =>
-                stats.mediaItemsWeeklySum[b.filePath] -
-                stats.mediaItemsWeeklySum[a.filePath]
-            )
-            .map((item) => (
-              <TableRow key={item.filePath}>
-                <TableCell>{item.title}</TableCell>
-                <TableCell align="right">
-                  {stats.mediaItemsWeeklySum[item.filePath]}
-                </TableCell>
-              </TableRow>
-            ))}
+          {sortItemsByStats(items, stats.mediaItemsWeeklySum).map((item) => (
+            <TableRow key={item.filePath}>
+              <TableCell>{item.title}</TableCell>
+              <TableCell align="right">
+                {stats.mediaItemsWeeklySum[item.filePath]}
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </>

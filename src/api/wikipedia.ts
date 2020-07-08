@@ -62,7 +62,11 @@ export async function fetchMediaRequestStats(
     }/${formatDate(options.start, 'yyyMMdd')}/${formatDate(
       options.end,
       'yyyMMdd'
-    )}`
+    )}`, {
+      headers: {
+        'Api-User-Agent': 'https://wikimedia.org.il/about-us/'
+      }
+    }
   );
   const data = await response.json();
   if (response.ok) {

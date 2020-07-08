@@ -1,8 +1,10 @@
 import React, { forwardRef } from "react";
 import clsx from "clsx";
 import { makeStyles, colors } from "@material-ui/core";
-// import IconButton from "@material-ui/core/IconButton";
-// import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import ImageIcon from "@material-ui/icons/Image";
+import SettingsIcon from "@material-ui/icons/Settings";
+import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import { NavLink, NavLinkProps } from "react-router-dom";
@@ -37,6 +39,7 @@ const useItemsStyles = makeStyles((theme) => ({
     "& $icon": {
       color: theme.palette.primary.main,
     },
+    backgroundColor: colors.blue[50],
   },
   nested: {
     paddingLeft: theme.spacing(4),
@@ -70,12 +73,8 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
       }}
       open={open}
     >
-      {/* <div className={classes.toolbarIcon}>
-        <IconButton onClick={onClose}>
-          <ChevronLeftIcon />
-        </IconButton>
-      </div> */}
-      <Box p={4}>
+      <Box p={4} textAlign="center">
+        <TrendingUpIcon fontSize="large" />
         <Typography variant="h6" align="center">
           Wikimedia GLAM Analytics
         </Typography>
@@ -89,6 +88,7 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
             to={`/inst/met`}
             activeClassName={listItemClasses.active}
             className={listItemClasses.button}
+            startIcon={<DashboardIcon />}
           >
             Dashboard
           </Button>
@@ -102,6 +102,7 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
                 to={`/inst/met/file/${encodeURIComponent(item.filePath)}`}
                 activeClassName={listItemClasses.active}
                 className={listItemClasses.button}
+                startIcon={<ImageIcon />}
               >
                 {item.title}
               </Button>
@@ -117,6 +118,7 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
             to={`/inst/met/settings`}
             activeClassName={listItemClasses.active}
             className={listItemClasses.button}
+            startIcon={<SettingsIcon />}
           >
             Settings
           </Button>

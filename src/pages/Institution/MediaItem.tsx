@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
 import clsx from "clsx";
-
-import { useLocation, useRouteMatch } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { useTheme } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -51,49 +50,47 @@ const MediaItem = () => {
   }, [data]);
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   return (
-    <>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Typography component="h1" variant="h5" gutterBottom>
-            {fileData?.title}
-          </Typography>
-        </Grid>
-        <Grid item xs={12} md={8} lg={9}>
-          <Paper className={fixedHeightPaper}>
-            {chartData && (
-              <ResponsiveContainer>
-                <LineChart
-                  data={chartData}
-                  margin={{
-                    top: 16,
-                    right: 16,
-                    bottom: 0,
-                    left: 0,
-                  }}
-                >
-                  <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
-                  <YAxis stroke={theme.palette.text.secondary} />
-                  <Line
-                    type="monotone"
-                    dataKey="current"
-                    stroke={theme.palette.primary.main}
-                    dot={false}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="previous"
-                    stroke={theme.palette.primary.light}
-                    dot={false}
-                    strokeDasharray="5 5"
-                  />
-                  <Tooltip />
-                </LineChart>
-              </ResponsiveContainer>
-            )}
-          </Paper>
-        </Grid>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <Typography component="h1" variant="h5" gutterBottom>
+          {fileData?.title}
+        </Typography>
       </Grid>
-    </>
+      <Grid item xs={12} md={8} lg={9}>
+        <Paper className={fixedHeightPaper}>
+          {chartData && (
+            <ResponsiveContainer>
+              <LineChart
+                data={chartData}
+                margin={{
+                  top: 16,
+                  right: 16,
+                  bottom: 0,
+                  left: 0,
+                }}
+              >
+                <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+                <YAxis stroke={theme.palette.text.secondary} />
+                <Line
+                  type="monotone"
+                  dataKey="current"
+                  stroke={theme.palette.primary.main}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="previous"
+                  stroke={theme.palette.primary.light}
+                  dot={false}
+                  strokeDasharray="5 5"
+                />
+                <Tooltip />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 
