@@ -54,7 +54,6 @@ export const ItemSettingsCard = ({
   onDelete,
   preview,
 }: ItemSettingsCardProps) => {
-  console.log("item", item);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const classes = useStyles();
   const handleItemDelete = () => {
