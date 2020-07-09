@@ -10,6 +10,8 @@ import { MediaItem } from "../../../api/app";
 import { fetchMediaDataFromFileName } from "../../../api/app";
 import { useForm } from "react-hook-form";
 import { ItemSettingsCard } from "./ItemSettingsCard";
+import { useAddGlamMediaItem } from "../../../api/hook";
+import { useRouteMatch } from "react-router-dom";
 
 interface AddItemDialogProps {
   open: boolean;
@@ -22,12 +24,20 @@ export const AddItemDialog = ({
   onClose,
   onNewItem,
 }: AddItemDialogProps) => {
+  const { params } = useRouteMatch<{ glamId: string }>();
   const [fileData, setFileData] = React.useState<MediaItem | null>(null);
   const { register, handleSubmit, formState } = useForm<{ fileName: string }>();
+  const [mutate] = useAddGlamMediaItem(params.glamId);
   const onSubmit = async (data: { fileName: string }) => {
     const fileData = await fetchMediaDataFromFileName(data.fileName);
     setFileData(fileData);
   };
+  const onAdd = async () => {
+    if (fileData) {
+      mutate(fileData);
+      onNewItem(fileData)
+    }
+  }
   return (
     <Dialog
       open={open}
@@ -54,7 +64,11 @@ export const AddItemDialog = ({
             inputRef={register}
             disabled={formState.isSubmitting}
           />
-          <Button color="primary" type="submit" disabled={formState.isSubmitting}>
+          <Button
+            color="primary"
+            type="submit"
+            disabled={formState.isSubmitting}
+          >
             Load
           </Button>
         </form>
@@ -63,7 +77,7 @@ export const AddItemDialog = ({
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button
-          onClick={() => (fileData ? onNewItem(fileData) : null)}
+          onClick={onAdd}
           color="primary"
           variant="contained"
           disabled={!fileData}

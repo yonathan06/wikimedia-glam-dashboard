@@ -1,4 +1,3 @@
-
 export interface MediaItem {
   name: string,
   filePath: string,
@@ -38,6 +37,10 @@ export const getInstMediaItems = async () => {
 export const getMedia =
   (filePath: string) => MockMediaList.find(item => item.filePath === filePath);
 
+
+export async function addMediaItem(glamId: string, item: MediaItem) {
+  return item;
+}
 
 export async function fetchMediaDataFromFileName(fileName: string) {
   const response = await fetch(`http://localhost:5000/commonsapi?fileName=${fileName}`);

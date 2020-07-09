@@ -15,6 +15,14 @@ interface FormValues {
 
 const MonthDateFormat = "MMM yy";
 
+function normalizeValuesFromString(values: any) {
+  return {
+    ...values,
+    start: new Date(values.start),
+    end: new Date(values.end),
+  };
+}
+
 function getFormValuesFromLocalStorage() {
   const valuesString = localStorage.getItem("formValues");
   if (!valuesString) {
@@ -22,11 +30,7 @@ function getFormValuesFromLocalStorage() {
   }
   try {
     const values = JSON.parse(valuesString);
-    return {
-      ...values,
-      start: new Date(values.start),
-      end: new Date(values.end),
-    };
+    return normalizeValuesFromString(values);
   } catch (error) {
     return {};
   }
@@ -40,7 +44,8 @@ function General() {
     Array<{ name: string; requests: number }>
   >();
   const [filePath, setFilePath] = useState("");
-  const onSubmit = async (values: FormValues) => {
+  const onSubmit = async (formValues: any) => {
+    const values =  normalizeValuesFromString(formValues);
     localStorage.setItem("formValues", JSON.stringify(values));
     const { error, data } = await fetchMediaRequestStats(values);
     if (error) {
@@ -82,8 +87,7 @@ function General() {
             className="form-control"
             as={DatePicker}
             control={control}
-            valueName="selected"
-            onChange={([selected]) => selected}
+            onChange={(selected: Date) => selected}
             name="start"
             placeholderText="Start month"
             dateFormat={MonthDateFormat}
@@ -98,8 +102,7 @@ function General() {
             className="form-control"
             as={DatePicker}
             control={control}
-            valueName="selected"
-            onChange={([selected]) => selected}
+            onChange={(selected: Date) => selected}
             name="end"
             placeholderText="End month"
             dateFormat={MonthDateFormat}

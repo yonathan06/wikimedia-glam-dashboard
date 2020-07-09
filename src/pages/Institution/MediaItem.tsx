@@ -13,20 +13,19 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { getMedia } from "../../api/app";
 import { DateFormat } from "../../api/wikipedia";
-import { useMediaItemStats } from "../../api/hook";
+import { useMediaItemStats, useGlamMediaItem } from "../../api/hook";
 import { useStyles } from "./styles";
 import format from "date-fns/format";
 import parse from "date-fns/parse";
 
 const MediaItem = () => {
-  const { params } = useRouteMatch<{ filePath: string }>();
+  const { params } = useRouteMatch<{ glamId: string, filePath: string }>();
   const theme = useTheme();
   const classes = useStyles();
 
   const filePath = decodeURIComponent(params.filePath);
-  const fileData = useMemo(() => getMedia(filePath), [filePath]);
+  const { data: fileData } = useGlamMediaItem(params.glamId, filePath);
   const { data } = useMediaItemStats(filePath);
   const chartData = useMemo(() => {
     if (data) {

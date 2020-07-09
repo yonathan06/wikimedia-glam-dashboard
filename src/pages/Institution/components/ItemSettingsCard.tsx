@@ -80,7 +80,7 @@ export const ItemSettingsCard = ({
             <CardActions>
               <Button
                 component={Link}
-                to={`/inst/met/file/${encodeURIComponent(item.filePath)}`}
+                to={`/glam/met/file/${encodeURIComponent(item.filePath)}`}
                 size="small"
                 color="primary"
               >

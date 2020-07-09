@@ -5,11 +5,13 @@ import WeekTotal from "./components/WeekTotal";
 import ItemsTable from "./components/ItemsTable";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import { useStats, useMediaItemsList } from "../../api/hook";
+import { useStats, useGlamMediaItems } from "../../api/hook";
 import { useStyles } from "./styles";
+import { useRouteMatch } from "react-router-dom";
 
 const Overview = () => {
-  const { data: items } = useMediaItemsList();
+  const { params } = useRouteMatch<{ glamId: string }>();
+  const { data: items } = useGlamMediaItems(params.glamId);
   const { data: stats } = useStats(items);
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);

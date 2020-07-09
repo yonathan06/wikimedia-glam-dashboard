@@ -1,10 +1,11 @@
 import { WikipediaStatsItem, fetchMediaBiweeklyStats, DateFormat } from "./wikipedia";
 import { useState, useEffect } from "react";
-import { MediaItem, getInstMediaItems } from "./app";
+import { MediaItem, getInstMediaItems, addMediaItem } from "./app";
 import sub from "date-fns/sub";
 import parse from "date-fns/parse";
 import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
 import isSameDay from "date-fns/isSameDay";
+import { useQuery, useMutation, queryCache } from "react-query";
 
 export interface MainStats {
   mediaItemsBiweekly: {
@@ -72,19 +73,21 @@ async function loadStats(mediaItems: MediaItem[]) {
   return calculatedStats;
 }
 
-export const useStats = (mediaItems: MediaItem[]) => {
+export const useStats = (mediaItems?: MediaItem[]) => {
   const [data, setData] = useState(initialState);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
-      setLoading(true);
-      if (mediaItems?.length > 0) {
-        const stats = await loadStats(mediaItems);
-        setData(stats);
-      } else {
-        setData(initialState);
+      if (mediaItems) {
+        setLoading(true);
+        if (mediaItems?.length > 0) {
+          const stats = await loadStats(mediaItems);
+          setData(stats);
+        } else {
+          setData(initialState);
+        }
+        setLoading(false);
       }
-      setLoading(false);
     })();
   }, [mediaItems]);
   return { data, loading };
@@ -101,7 +104,7 @@ export const useMediaItemStats = (filePath: string) => {
         const { data, error } = await fetchMediaBiweeklyStats(filePath);
         if (error) {
           setError(error);
-        } else if(data){
+        } else if (data) {
           const { items } = data;
           const stats: MediaItemStats = {
             biweekly: items,
@@ -127,14 +130,29 @@ export const useMediaItemStats = (filePath: string) => {
   return { data, error, loading };
 }
 
-export const useMediaItemsList = () => {
-  const [data, setData] = useState<MediaItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    getInstMediaItems().then((items) => {
-      setData(items);
-      setLoading(false);
-    });
-  }, []);
-  return { data, loading };
-};
+const GlamMediaItemKey = 'glamMediaItems';
+
+export const useGlamMediaItems = (glamId: string) => {
+  return useQuery([GlamMediaItemKey, glamId], async (_, glamId: string) => {
+    return await getInstMediaItems();
+  }, { refetchOnMount: false, refetchOnWindowFocus: false });
+}
+
+export const useGlamMediaItem = (glamId: string, filePath: string) => {
+  return useQuery([GlamMediaItemKey, glamId, 'item', filePath], async (glamKey, glamId, itemKey, filePath) => {
+    const items = queryCache.getQueryData<MediaItem[]>([glamKey, glamId]);
+    return items?.find(item => item.filePath === filePath);
+  });
+}
+
+export const useAddGlamMediaItem = (glamId: string) => {
+  return useMutation<MediaItem, MediaItem>((item) => {
+    return addMediaItem(glamId, item);
+  }, {
+    onSuccess: (item) => {
+      queryCache.setQueryData([GlamMediaItemKey, glamId, 'item', item.filePath], item);
+      const items = queryCache.getQueryData<MediaItem[]>([GlamMediaItemKey, glamId]);
+      queryCache.setQueryData([GlamMediaItemKey, glamId], [...(items ?? []), item] );
+    }
+  });
+}

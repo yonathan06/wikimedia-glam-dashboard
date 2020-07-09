@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { useStyles } from "../styles";
 import Link from "@material-ui/core/Link";
 import {
-  Link as RouterLink,
+  Link as RouterLink, useRouteMatch,
 } from "react-router-dom";
 
 interface AppToolbarProps {
@@ -21,6 +21,7 @@ const AppToolbar = ({
   openDrawer,
 }: AppToolbarProps) => {
   const classes = useStyles({ drawerWidth });
+  let { url } = useRouteMatch();
   return (
     <Toolbar className={classes.toolbar}>
       <IconButton
@@ -41,7 +42,7 @@ const AppToolbar = ({
         color="inherit"
         noWrap
         className={classes.title}
-        to="/inst/met"
+        to={url}
       >
         Met Museum
       </Link>
