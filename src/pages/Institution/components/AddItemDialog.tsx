@@ -35,7 +35,7 @@ export const AddItemDialog = ({
   const onAdd = async () => {
     if (fileData) {
       mutate(fileData);
-      onNewItem(fileData)
+      onClose();
     }
   }
   return (

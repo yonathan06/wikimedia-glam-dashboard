@@ -21,7 +21,9 @@ function App() {
           <Route path="/test" component={General} />
         </Switch>
       </Router>
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV !== 'production' &&
+        <ReactQueryDevtools initialIsOpen={false} />
+      }
     </>
   );
 }

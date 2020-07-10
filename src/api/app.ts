@@ -30,6 +30,8 @@ const MockMediaList: MediaItem[] = [
   }
 ]
 
+const BaseUrl = process.env.REACT_APP_API_URL
+
 export const getInstMediaItems = async () => {
   return MockMediaList;
 }
@@ -43,7 +45,7 @@ export async function addMediaItem(glamId: string, item: MediaItem) {
 }
 
 export async function fetchMediaDataFromFileName(fileName: string) {
-  const response = await fetch(`http://localhost:5000/commonsapi?fileName=${fileName}`);
+  const response = await fetch(`${BaseUrl}/commonsapi?fileName=${fileName}`);
   const text = await response.text();
   const parser = new DOMParser();
   const xml = parser.parseFromString(text, 'text/xml');
