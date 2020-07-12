@@ -1,30 +1,34 @@
-import { WikipediaStatsItem, fetchMediaBiweeklyStats, DateFormat } from "./wikipedia";
-import { useState, useEffect } from "react";
-import { MediaItem, getInstMediaItems, addMediaItem } from "./app";
-import sub from "date-fns/sub";
-import parse from "date-fns/parse";
-import differenceInCalendarDays from "date-fns/differenceInCalendarDays";
-import isSameDay from "date-fns/isSameDay";
-import { useQuery, useMutation, queryCache } from "react-query";
+import {
+  WikipediaStatsItem,
+  fetchMediaBiweeklyStats,
+  DateFormat,
+} from './wikipedia';
+import { useState, useEffect } from 'react';
+import { MediaItem, getInstMediaItems, addMediaItem } from './app';
+import sub from 'date-fns/sub';
+import parse from 'date-fns/parse';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
+import isSameDay from 'date-fns/isSameDay';
+import { useQuery, useMutation, queryCache } from 'react-query';
 
 export interface MainStats {
   mediaItemsBiweekly: {
-    [filePath: string]: WikipediaStatsItem[]
-  },
+    [filePath: string]: WikipediaStatsItem[];
+  };
   mediaItemsWeeklySum: {
-    [filePath: string]: number
-  }
+    [filePath: string]: number;
+  };
   mediaItemsDaily: {
-    [filePath: string]: WikipediaStatsItem | undefined
-  },
-  biweekly: WikipediaStatsItem[],
-  weeklySum: number
+    [filePath: string]: WikipediaStatsItem | undefined;
+  };
+  biweekly: WikipediaStatsItem[];
+  weeklySum: number;
 }
 
 export interface MediaItemStats {
-  biweekly: WikipediaStatsItem[],
-  weeklySum: number,
-  yesterdaySum: number
+  biweekly: WikipediaStatsItem[];
+  weeklySum: number;
+  yesterdaySum: number;
 }
 
 const initialState: MainStats = {
@@ -32,44 +36,51 @@ const initialState: MainStats = {
   mediaItemsWeeklySum: {},
   mediaItemsDaily: {},
   biweekly: [],
-  weeklySum: 0
-}
+  weeklySum: 0,
+};
 
 async function loadStats(mediaItems: MediaItem[]) {
-  const fetchAllItemsStats = mediaItems.map((item) => fetchMediaBiweeklyStats(item.filePath));
+  const fetchAllItemsStats = mediaItems.map((item) =>
+    fetchMediaBiweeklyStats(item.filePath)
+  );
   const results = await Promise.all(fetchAllItemsStats);
-  const calculatedStats = results.reduce((state, result, index) => {
-    const { data } = result;
-    if (data) {
-      const { items } = data;
-      const { filePath } = mediaItems[index];
-      const yesterday = sub(new Date(), { days: 1 });
-      state.mediaItemsBiweekly[filePath] = items;
-      state.mediaItemsWeeklySum[filePath] = 0;
-      items.forEach(item => {
-        const itemDate = parse(item.timestamp, DateFormat, new Date());
-        if (isSameDay(yesterday, itemDate)) {
-          state.mediaItemsDaily[filePath] = item;
-        }
-        if (differenceInCalendarDays(yesterday, itemDate) <= 6) {
-          state.weeklySum += item.requests;
-          state.mediaItemsWeeklySum[filePath] += item.requests;
-        }
-        const totalBiweeklyItemIndex = state.biweekly.findIndex(totalItem => totalItem.timestamp === item.timestamp);
-        if (totalBiweeklyItemIndex === -1) {
-          state.biweekly.push({
-            ...item,
-            file_path: 'all_items'
-          });
-        } else {
-          const totalItem = state.biweekly[totalBiweeklyItemIndex];
-          totalItem.requests += item.requests;
-          state.biweekly.splice(totalBiweeklyItemIndex, 1, totalItem);
-        }
-      });
-    }
-    return state;
-  }, { ...initialState });
+  const calculatedStats = results.reduce(
+    (state, result, index) => {
+      const { data } = result;
+      if (data) {
+        const { items } = data;
+        const { filePath } = mediaItems[index];
+        const yesterday = sub(new Date(), { days: 1 });
+        state.mediaItemsBiweekly[filePath] = items;
+        state.mediaItemsWeeklySum[filePath] = 0;
+        items.forEach((item) => {
+          const itemDate = parse(item.timestamp, DateFormat, new Date());
+          if (isSameDay(yesterday, itemDate)) {
+            state.mediaItemsDaily[filePath] = item;
+          }
+          if (differenceInCalendarDays(yesterday, itemDate) <= 6) {
+            state.weeklySum += item.requests;
+            state.mediaItemsWeeklySum[filePath] += item.requests;
+          }
+          const totalBiweeklyItemIndex = state.biweekly.findIndex(
+            (totalItem) => totalItem.timestamp === item.timestamp
+          );
+          if (totalBiweeklyItemIndex === -1) {
+            state.biweekly.push({
+              ...item,
+              file_path: 'all_items',
+            });
+          } else {
+            const totalItem = state.biweekly[totalBiweeklyItemIndex];
+            totalItem.requests += item.requests;
+            state.biweekly.splice(totalBiweeklyItemIndex, 1, totalItem);
+          }
+        });
+      }
+      return state;
+    },
+    { ...initialState }
+  );
   return calculatedStats;
 }
 
@@ -91,7 +102,7 @@ export const useStats = (mediaItems?: MediaItem[]) => {
     })();
   }, [mediaItems]);
   return { data, loading };
-}
+};
 
 export const useMediaItemStats = (filePath: string) => {
   const [data, setData] = useState<MediaItemStats>();
@@ -110,8 +121,8 @@ export const useMediaItemStats = (filePath: string) => {
             biweekly: items,
             weeklySum: 0,
             yesterdaySum: 0,
-          }
-          items.forEach(item => {
+          };
+          items.forEach((item) => {
             const yesterday = sub(new Date(), { days: 1 });
             const itemDate = parse(item.timestamp, DateFormat, new Date());
             if (isSameDay(yesterday, itemDate)) {
@@ -128,31 +139,69 @@ export const useMediaItemStats = (filePath: string) => {
     })();
   }, [filePath]);
   return { data, error, loading };
-}
+};
+
+export const useGlamData = (glamId: string) => {
+  return useQuery(['glam', glamId], async (_, glamId: string) => {
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/glam/${glamId}`
+    );
+    if (!response.ok) {
+      throw new Error(JSON.stringify(await response.json()));
+    }
+  });
+};
 
 const GlamMediaItemKey = 'glamMediaItems';
 
 export const useGlamMediaItems = (glamId: string) => {
-  return useQuery([GlamMediaItemKey, glamId], async (_, glamId: string) => {
-    return await getInstMediaItems();
-  }, { refetchOnMount: false, refetchOnWindowFocus: false });
-}
+  return useQuery(
+    [GlamMediaItemKey, glamId],
+    async (_, glamId: string) => {
+      // const response = await fetch(
+      //   `${process.env.REACT_APP_API_URL}/glam/${glamId}/item`
+      // );
+      // if (!response.ok) {
+      //   throw new Error(JSON.stringify(await response.json()));
+      // }
+      // const { items } = await response.json();
+      // return items;
+      return getInstMediaItems();
+    },
+    { refetchOnMount: false, refetchOnWindowFocus: false }
+  );
+};
 
 export const useGlamMediaItem = (glamId: string, filePath: string) => {
-  return useQuery([GlamMediaItemKey, glamId, 'item', filePath], async (glamKey, glamId, itemKey, filePath) => {
-    const items = queryCache.getQueryData<MediaItem[]>([glamKey, glamId]);
-    return items?.find(item => item.filePath === filePath);
-  });
-}
+  return useQuery(
+    [GlamMediaItemKey, glamId, 'item', filePath],
+    async (glamKey, glamId, itemKey, filePath) => {
+      const items = queryCache.getQueryData<MediaItem[]>([glamKey, glamId]);
+      return items?.find((item) => item.filePath === filePath);
+    }
+  );
+};
 
 export const useAddGlamMediaItem = (glamId: string) => {
-  return useMutation<MediaItem, MediaItem>((item) => {
-    return addMediaItem(glamId, item);
-  }, {
-    onSuccess: (item) => {
-      queryCache.setQueryData([GlamMediaItemKey, glamId, 'item', item.filePath], item);
-      const items = queryCache.getQueryData<MediaItem[]>([GlamMediaItemKey, glamId]);
-      queryCache.setQueryData([GlamMediaItemKey, glamId], [...(items ?? []), item] );
+  return useMutation<MediaItem, MediaItem>(
+    (item) => {
+      return addMediaItem(glamId, item);
+    },
+    {
+      onSuccess: (item) => {
+        queryCache.setQueryData(
+          [GlamMediaItemKey, glamId, 'item', item.filePath],
+          item
+        );
+        const items = queryCache.getQueryData<MediaItem[]>([
+          GlamMediaItemKey,
+          glamId,
+        ]);
+        queryCache.setQueryData(
+          [GlamMediaItemKey, glamId],
+          [...(items ?? []), item]
+        );
+      },
     }
-  });
-}
+  );
+};
