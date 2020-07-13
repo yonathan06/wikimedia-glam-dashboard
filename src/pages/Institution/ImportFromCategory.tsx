@@ -5,9 +5,11 @@ import { useForm } from 'react-hook-form';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useInfiniteQuery } from 'react-query';
-import { CategoryFileMembersResponse } from '../../api/wikipedia';
 import { makeStyles } from '@material-ui/core';
-import { fetchFileListByCategory } from '../../api/app';
+import {
+  fetchFileListByCategory,
+  CategoryFileMembersResponse,
+} from '../../api/app';
 import CategoryItemPreview from './components/CategoryItemPreview';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +48,7 @@ export const AddFromCategory = () => {
       return fetchFileListByCategory(category, next);
     },
     {
-      getFetchMore: (lastGroup, allGroups) => lastGroup?.continue?.cmcontinue,
+      getFetchMore: (lastGroup) => (lastGroup?.next ? lastGroup.next : false),
       enabled: category,
       refetchOnWindowFocus: false,
     }
@@ -79,7 +81,7 @@ export const AddFromCategory = () => {
       <div>
         {categoryItems?.map((batch, index) => (
           <div key={index}>
-            {batch?.query?.categorymembers?.map((categoryItem) => (
+            {batch?.items?.map((categoryItem) => (
               <CategoryItemPreview
                 key={categoryItem.title}
                 categoryItem={categoryItem}

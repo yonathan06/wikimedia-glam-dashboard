@@ -1,4 +1,3 @@
-import { CategoryFileMembersResponse } from './wikipedia';
 import { GlamMediaItem } from '../lib/models';
 
 const MockMediaList: GlamMediaItem[] = [
@@ -64,6 +63,11 @@ export interface FileData {
 export async function fetchFileData(fileName: string): Promise<FileData> {
   const response = await fetch(`${BaseUrl}/filedata?fileName=${fileName}`);
   return await response.json();
+}
+
+export interface CategoryFileMembersResponse {
+  next?: string;
+  items: FileData[];
 }
 
 export async function fetchFileListByCategory(category: string, next?: string) {

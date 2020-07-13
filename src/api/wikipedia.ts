@@ -91,18 +91,3 @@ export async function fetchMediaBiweeklyStats(filePath: string) {
     granularity: 'daily',
   });
 }
-
-export interface CategoryFileMembersResponse {
-  batchcomplete: string;
-  continue: {
-    cmcontinue: string;
-    continue: string;
-  };
-  query: {
-    categorymembers: {
-      pageid: number;
-      ns: number;
-      title: string;
-    }[];
-  };
-}
