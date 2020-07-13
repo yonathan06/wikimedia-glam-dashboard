@@ -1,10 +1,10 @@
-import React, { useMemo } from "react";
-import clsx from "clsx";
-import { useRouteMatch } from "react-router-dom";
-import { useTheme } from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
+import React, { useMemo } from 'react';
+import clsx from 'clsx';
+import { useRouteMatch } from 'react-router-dom';
+import { useTheme } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 import {
   LineChart,
   Line,
@@ -12,15 +12,15 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-} from "recharts";
-import { DateFormat } from "../../api/wikipedia";
-import { useMediaItemStats, useGlamMediaItem } from "../../api/hook";
-import { useStyles } from "./styles";
-import format from "date-fns/format";
-import parse from "date-fns/parse";
+} from 'recharts';
+import { DateFormat } from '../../api/wikipedia';
+import { useMediaItemStats, useGlamMediaItem } from '../../api/hook';
+import { useStyles } from './styles';
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
 
 const MediaItem = () => {
-  const { params } = useRouteMatch<{ glamId: string, filePath: string }>();
+  const { params } = useRouteMatch<{ glamId: string; filePath: string }>();
   const theme = useTheme();
   const classes = useStyles();
 
@@ -38,7 +38,7 @@ const MediaItem = () => {
         chartData.push({
           name: format(
             parse(biweekly[i].timestamp, DateFormat, new Date()),
-            "dd MM"
+            'dd MM'
           ),
           current: biweekly[i].requests,
           previous: biweekly[i - 7].requests,
@@ -51,8 +51,8 @@ const MediaItem = () => {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Typography component="h1" variant="h5" gutterBottom>
-          {fileData?.name}
+        <Typography component='h1' variant='h5' gutterBottom>
+          {fileData?.title}
         </Typography>
       </Grid>
       <Grid item xs={12} md={8} lg={9}>
@@ -68,20 +68,20 @@ const MediaItem = () => {
                   left: 0,
                 }}
               >
-                <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+                <XAxis dataKey='name' stroke={theme.palette.text.secondary} />
                 <YAxis stroke={theme.palette.text.secondary} />
                 <Line
-                  type="monotone"
-                  dataKey="current"
+                  type='monotone'
+                  dataKey='current'
                   stroke={theme.palette.primary.main}
                   dot={false}
                 />
                 <Line
-                  type="monotone"
-                  dataKey="previous"
+                  type='monotone'
+                  dataKey='previous'
                   stroke={theme.palette.primary.light}
                   dot={false}
-                  strokeDasharray="5 5"
+                  strokeDasharray='5 5'
                 />
                 <Tooltip />
               </LineChart>

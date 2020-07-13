@@ -8,6 +8,7 @@ import { useInfiniteQuery } from 'react-query';
 import { CategoryFileMembersResponse } from '../../api/wikipedia';
 import { makeStyles } from '@material-ui/core';
 import { fetchFileListByCategory } from '../../api/app';
+import CategoryItemPreview from './components/CategoryItemPreview';
 
 const useStyles = makeStyles((theme) => ({
   inlineForm: {
@@ -20,10 +21,10 @@ const useStyles = makeStyles((theme) => ({
 
 export const AddFromCategory = () => {
   const { params } = useRouteMatch<{ glamId: string }>();
-  const { data: items } = useGlamMediaItems(params.glamId);
+  const { data: existingItems } = useGlamMediaItems(params.glamId);
   const [category, setCategory] = React.useState('');
   const classes = useStyles();
-  const { register, handleSubmit, formState } = useForm<{ category: string }>();
+  const { register, handleSubmit } = useForm<{ category: string }>();
 
   const onSubmit = (data: { category: string }) => {
     setCategory(data.category);
@@ -79,7 +80,11 @@ export const AddFromCategory = () => {
         {categoryItems?.map((batch, index) => (
           <div key={index}>
             {batch?.query?.categorymembers?.map((categoryItem) => (
-              <div key={categoryItem.title}>{categoryItem.title}</div>
+              <CategoryItemPreview
+                key={categoryItem.title}
+                categoryItem={categoryItem}
+                existingItems={existingItems}
+              />
             ))}
           </div>
         ))}

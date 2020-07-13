@@ -6,8 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import { MediaItem } from '../../../api/app';
-import { fetchMediaDataFromFileName } from '../../../api/app';
+import { FileData, fetchFileData } from '../../../api/app';
 import { useForm } from 'react-hook-form';
 import { ItemSettingsCard } from './ItemSettingsCard';
 import { useAddGlamMediaItem } from '../../../api/hook';
@@ -18,18 +17,18 @@ interface AddItemDialogProps {
   onClose: () => void;
 }
 
-export const AddItemDialog = ({ open, onClose }: AddItemDialogProps) => {
+const AddItemDialog = ({ open, onClose }: AddItemDialogProps) => {
   const { params } = useRouteMatch<{ glamId: string }>();
-  const [fileData, setFileData] = React.useState<MediaItem | null>(null);
+  const [fileData, setFileData] = React.useState<FileData>();
   const { register, handleSubmit, formState } = useForm<{ fileName: string }>();
   const [mutate] = useAddGlamMediaItem(params.glamId);
   const onSubmit = async (data: { fileName: string }) => {
-    const fileData = await fetchMediaDataFromFileName(data.fileName);
+    const fileData = await fetchFileData(data.fileName);
     setFileData(fileData);
   };
   const onAdd = async () => {
     if (fileData) {
-      mutate(fileData);
+      // mutate(fileData);
       onClose();
     }
   };
@@ -83,3 +82,5 @@ export const AddItemDialog = ({ open, onClose }: AddItemDialogProps) => {
     </Dialog>
   );
 };
+
+export default AddItemDialog;

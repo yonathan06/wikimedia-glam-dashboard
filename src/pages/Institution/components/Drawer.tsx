@@ -98,15 +98,15 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
         </ListItem>
         {loadingMediaItems && <CircularProgress />}
         {items?.map((item) => (
-          <ListItem key={item.filePath} className={listItemClasses.nested}>
+          <ListItem key={item.file_path} className={listItemClasses.nested}>
             <Button
               component={CustomRouterLink}
-              to={`/glam/met/file/${encodeURIComponent(item.filePath)}`}
+              to={`/glam/met/file/${encodeURIComponent(item.file_path)}`}
               activeClassName={listItemClasses.active}
               className={listItemClasses.button}
               startIcon={<ImageIcon />}
             >
-              {item.name}
+              {item.title}
             </Button>
           </ListItem>
         ))}

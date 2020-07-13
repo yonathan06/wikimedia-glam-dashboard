@@ -3,11 +3,11 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import { useGlamMediaItems } from '../../api/hook';
 import { ItemSettingsCard } from './components/ItemSettingsCard';
-import { MediaItem } from '../../api/app';
-import { AddItemDialog } from './components/AddItemDialog';
+import AddItemDialog from './components/AddItemDialog';
 import { useRouteMatch, Link } from 'react-router-dom';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import { makeStyles } from '@material-ui/core';
+import { GlamMediaItem } from '../../lib/models';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -19,13 +19,13 @@ const Settings = () => {
   const [addItemOpen, setAddItemOpen] = React.useState(false);
   const { params, url } = useRouteMatch<{ glamId: string }>();
   const { data: items } = useGlamMediaItems(params.glamId);
-  const handleOnDeleteItem = (item: MediaItem) => {};
+  const handleOnDeleteItem = (item: GlamMediaItem) => {};
   const classes = useStyles();
   return (
     <div>
       {items?.map((item) => (
         <ItemSettingsCard
-          key={item.filePath}
+          key={item.file_path}
           item={item}
           onDelete={handleOnDeleteItem}
         />

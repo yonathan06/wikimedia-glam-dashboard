@@ -4,12 +4,13 @@ import {
   DateFormat,
 } from './wikipedia';
 import { useState, useEffect } from 'react';
-import { MediaItem, getInstMediaItems, addMediaItem } from './app';
+import { getInstMediaItems, addMediaItem, fetchFileData } from './app';
 import sub from 'date-fns/sub';
 import parse from 'date-fns/parse';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import isSameDay from 'date-fns/isSameDay';
 import { useQuery, useMutation, queryCache } from 'react-query';
+import { GlamMediaItem } from '../lib/models';
 
 export interface MainStats {
   mediaItemsBiweekly: {
@@ -39,9 +40,9 @@ const initialState: MainStats = {
   weeklySum: 0,
 };
 
-async function loadStats(mediaItems: MediaItem[]) {
+async function loadStats(mediaItems: GlamMediaItem[]) {
   const fetchAllItemsStats = mediaItems.map((item) =>
-    fetchMediaBiweeklyStats(item.filePath)
+    fetchMediaBiweeklyStats(item.file_path)
   );
   const results = await Promise.all(fetchAllItemsStats);
   const calculatedStats = results.reduce(
@@ -49,18 +50,18 @@ async function loadStats(mediaItems: MediaItem[]) {
       const { data } = result;
       if (data) {
         const { items } = data;
-        const { filePath } = mediaItems[index];
+        const { file_path } = mediaItems[index];
         const yesterday = sub(new Date(), { days: 1 });
-        state.mediaItemsBiweekly[filePath] = items;
-        state.mediaItemsWeeklySum[filePath] = 0;
+        state.mediaItemsBiweekly[file_path] = items;
+        state.mediaItemsWeeklySum[file_path] = 0;
         items.forEach((item) => {
           const itemDate = parse(item.timestamp, DateFormat, new Date());
           if (isSameDay(yesterday, itemDate)) {
-            state.mediaItemsDaily[filePath] = item;
+            state.mediaItemsDaily[file_path] = item;
           }
           if (differenceInCalendarDays(yesterday, itemDate) <= 6) {
             state.weeklySum += item.requests;
-            state.mediaItemsWeeklySum[filePath] += item.requests;
+            state.mediaItemsWeeklySum[file_path] += item.requests;
           }
           const totalBiweeklyItemIndex = state.biweekly.findIndex(
             (totalItem) => totalItem.timestamp === item.timestamp
@@ -84,7 +85,7 @@ async function loadStats(mediaItems: MediaItem[]) {
   return calculatedStats;
 }
 
-export const useStats = (mediaItems?: MediaItem[]) => {
+export const useStats = (mediaItems?: GlamMediaItem[]) => {
   const [data, setData] = useState(initialState);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -172,28 +173,36 @@ export const useGlamMediaItems = (glamId: string) => {
   );
 };
 
-export const useGlamMediaItem = (glamId: string, filePath: string) => {
+export const useGlamMediaItem = (glamId: string, file_path: string) => {
   return useQuery(
-    [GlamMediaItemKey, glamId, 'item', filePath],
-    async (glamKey, glamId, itemKey, filePath) => {
-      const items = queryCache.getQueryData<MediaItem[]>([glamKey, glamId]);
-      return items?.find((item) => item.filePath === filePath);
+    [GlamMediaItemKey, glamId, 'item', file_path],
+    async (glamKey, glamId, itemKey, file_path) => {
+      const items = queryCache.getQueryData<GlamMediaItem[]>([glamKey, glamId]);
+      return items?.find((item) => item.file_path === file_path);
     }
   );
 };
 
+export const useFileData = (fileName: string) => {
+  return useQuery(
+    ['fileData', fileName],
+    (key, fileName) => fetchFileData(fileName),
+    { refetchOnWindowFocus: false, enabled: fileName }
+  );
+};
+
 export const useAddGlamMediaItem = (glamId: string) => {
-  return useMutation<MediaItem, MediaItem>(
+  return useMutation<GlamMediaItem, GlamMediaItem>(
     (item) => {
       return addMediaItem(glamId, item);
     },
     {
       onSuccess: (item) => {
         queryCache.setQueryData(
-          [GlamMediaItemKey, glamId, 'item', item.filePath],
+          [GlamMediaItemKey, glamId, 'item', item.file_path],
           item
         );
-        const items = queryCache.getQueryData<MediaItem[]>([
+        const items = queryCache.getQueryData<GlamMediaItem[]>([
           GlamMediaItemKey,
           glamId,
         ]);
