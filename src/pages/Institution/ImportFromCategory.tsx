@@ -11,15 +11,43 @@ import {
   CategoryFileMembersResponse,
 } from '../../api/app';
 import CategoryItemPreview from './components/CategoryItemPreview';
+import { useViewportSpy } from 'beautiful-react-hooks';
 
 const useStyles = makeStyles((theme) => ({
   inlineForm: {
     display: 'flex',
+    marginBottom: theme.spacing(2),
   },
   searchInput: {
     marginRight: theme.spacing(1),
   },
 }));
+
+const FetchMoreButton = ({
+  onFetchMore,
+  disabled,
+}: {
+  onFetchMore: () => void;
+  disabled: boolean;
+}) => {
+  const ref = React.useRef<any>();
+  const isLoadMoreButtonVisible = useViewportSpy(ref);
+  React.useEffect(() => {
+    if (isLoadMoreButtonVisible) {
+      onFetchMore();
+    }
+  }, [isLoadMoreButtonVisible, onFetchMore]);
+  return (
+    <Button
+      buttonRef={ref}
+      color='primary'
+      disabled={disabled}
+      onClick={() => onFetchMore()}
+    >
+      Load more
+    </Button>
+  );
+};
 
 export const AddFromCategory = () => {
   const { params } = useRouteMatch<{ glamId: string }>();
@@ -53,6 +81,7 @@ export const AddFromCategory = () => {
       refetchOnWindowFocus: false,
     }
   );
+
   return (
     <div>
       <form className={classes.inlineForm} onSubmit={handleSubmit(onSubmit)}>
@@ -93,13 +122,10 @@ export const AddFromCategory = () => {
       </div>
       <div>
         {canFetchMore && (
-          <Button
-            color='primary'
-            disabled={!!isFetchingMore}
-            onClick={() => fetchMore()}
-          >
-            Load more
-          </Button>
+          <FetchMoreButton
+            disabled={!!canFetchMore}
+            onFetchMore={() => fetchMore()}
+          />
         )}
         {(isFetching || isFetchingMore) && <span>Loading...</span>}
       </div>
