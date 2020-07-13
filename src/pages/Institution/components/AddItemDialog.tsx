@@ -21,14 +21,14 @@ const AddItemDialog = ({ open, onClose }: AddItemDialogProps) => {
   const { params } = useRouteMatch<{ glamId: string }>();
   const [fileData, setFileData] = React.useState<FileData>();
   const { register, handleSubmit, formState } = useForm<{ fileName: string }>();
-  const [mutate] = useAddGlamMediaItem(params.glamId);
+  const [mutate, { isLoading }] = useAddGlamMediaItem(params.glamId);
   const onSubmit = async (data: { fileName: string }) => {
     const fileData = await fetchFileData(data.fileName);
     setFileData(fileData);
   };
   const onAdd = async () => {
     if (fileData) {
-      // mutate(fileData);
+      mutate([fileData]);
       onClose();
     }
   };
@@ -74,7 +74,7 @@ const AddItemDialog = ({ open, onClose }: AddItemDialogProps) => {
           onClick={onAdd}
           color='primary'
           variant='contained'
-          disabled={!fileData}
+          disabled={!fileData || isLoading}
         >
           Add
         </Button>

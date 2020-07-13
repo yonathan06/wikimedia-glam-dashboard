@@ -1,13 +1,12 @@
-import React from "react";
-import clsx from "clsx";
-import MenuIcon from "@material-ui/icons/Menu";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import { useStyles } from "../styles";
-import Link from "@material-ui/core/Link";
-import {
-  Link as RouterLink, useRouteMatch,
-} from "react-router-dom";
+import React from 'react';
+import clsx from 'clsx';
+import MenuIcon from '@material-ui/icons/Menu';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import { useStyles } from '../styles';
+import Link from '@material-ui/core/Link';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
+import { useGlamData } from '../../../api/hook';
 
 interface AppToolbarProps {
   drawerWidth: number;
@@ -21,13 +20,14 @@ const AppToolbar = ({
   openDrawer,
 }: AppToolbarProps) => {
   const classes = useStyles({ drawerWidth });
-  let { url } = useRouteMatch();
+  let { params, url } = useRouteMatch<{ glamId: string }>();
+  const { data } = useGlamData(params.glamId);
   return (
     <Toolbar className={classes.toolbar}>
       <IconButton
-        edge="start"
-        color="inherit"
-        aria-label="open drawer"
+        edge='start'
+        color='inherit'
+        aria-label='open drawer'
         onClick={openDrawer}
         className={clsx(
           classes.menuButton,
@@ -37,14 +37,14 @@ const AppToolbar = ({
         <MenuIcon />
       </IconButton>
       <Link
-        component={RouterLink}
-        variant="h6"
-        color="inherit"
+        variant='h6'
+        color='inherit'
         noWrap
         className={classes.title}
+        component={RouterLink}
         to={url}
       >
-        Met Museum
+        {data?.name}
       </Link>
     </Toolbar>
   );

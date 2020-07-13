@@ -34,14 +34,15 @@ const MediaItem = () => {
         return [];
       }
       const chartData = [];
-      for (let i = 7; i < 14; i++) {
+      const startIndex = biweekly.length - 7 > -1 ? biweekly.length - 7 : 0;
+      for (let i = startIndex; i < biweekly.length; i++) {
         chartData.push({
           name: format(
             parse(biweekly[i].timestamp, DateFormat, new Date()),
             'dd MM'
           ),
           current: biweekly[i].requests,
-          previous: biweekly[i - 7].requests,
+          previous: biweekly[i - 7]?.requests,
         });
       }
       return chartData;

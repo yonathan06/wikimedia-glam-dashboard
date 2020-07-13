@@ -4,13 +4,18 @@ import {
   DateFormat,
 } from './wikipedia';
 import { useState, useEffect } from 'react';
-import { getInstMediaItems, addMediaItem, fetchFileData } from './app';
+import {
+  getGlamMediaItems,
+  addMediaItems,
+  fetchFileData,
+  FileData,
+} from './app';
 import sub from 'date-fns/sub';
 import parse from 'date-fns/parse';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import isSameDay from 'date-fns/isSameDay';
 import { useQuery, useMutation, queryCache } from 'react-query';
-import { GlamMediaItem } from '../lib/models';
+import { GlamMediaItem, Glam } from '../lib/models';
 
 export interface MainStats {
   mediaItemsBiweekly: {
@@ -143,14 +148,23 @@ export const useMediaItemStats = (filePath: string) => {
 };
 
 export const useGlamData = (glamId: string) => {
-  return useQuery(['glam', glamId], async (_, glamId: string) => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/glam/${glamId}`
-    );
-    if (!response.ok) {
-      throw new Error(JSON.stringify(await response.json()));
+  return useQuery(
+    ['glam', glamId],
+    async (_, glamId: string) => {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/glam/${glamId}`
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(JSON.stringify(data));
+      }
+      return data as Glam;
+    },
+    {
+      refetchOnWindowFocus: false,
+      enabled: !!glamId,
     }
-  });
+  );
 };
 
 const GlamMediaItemKey = 'glamMediaItems';
@@ -159,15 +173,7 @@ export const useGlamMediaItems = (glamId: string) => {
   return useQuery(
     [GlamMediaItemKey, glamId],
     async (_, glamId: string) => {
-      // const response = await fetch(
-      //   `${process.env.REACT_APP_API_URL}/glam/${glamId}/item`
-      // );
-      // if (!response.ok) {
-      //   throw new Error(JSON.stringify(await response.json()));
-      // }
-      // const { items } = await response.json();
-      // return items;
-      return getInstMediaItems();
+      return await getGlamMediaItems(glamId);
     },
     { refetchOnMount: false, refetchOnWindowFocus: false }
   );
@@ -192,23 +198,25 @@ export const useFileData = (fileName: string) => {
 };
 
 export const useAddGlamMediaItem = (glamId: string) => {
-  return useMutation<GlamMediaItem, GlamMediaItem>(
-    (item) => {
-      return addMediaItem(glamId, item);
+  return useMutation<GlamMediaItem[], FileData[]>(
+    (items) => {
+      return addMediaItems(glamId, items);
     },
     {
-      onSuccess: (item) => {
-        queryCache.setQueryData(
-          [GlamMediaItemKey, glamId, 'item', item.file_path],
-          item
-        );
-        const items = queryCache.getQueryData<GlamMediaItem[]>([
+      onSuccess: (items) => {
+        items.forEach((item) => {
+          queryCache.setQueryData(
+            [GlamMediaItemKey, glamId, 'item', item.file_path],
+            item
+          );
+        });
+        const oldItems = queryCache.getQueryData<GlamMediaItem[]>([
           GlamMediaItemKey,
           glamId,
         ]);
         queryCache.setQueryData(
           [GlamMediaItemKey, glamId],
-          [...(items ?? []), item]
+          [...(oldItems ?? []), ...items]
         );
       },
     }

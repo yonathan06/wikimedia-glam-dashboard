@@ -13,7 +13,7 @@ import Overview from './Overview';
 import MediaItem from './MediaItem';
 import AppToolbar from './components/Toolbar';
 import Settings from './Settings';
-import { AddFromCategory } from './ImportFromCategory';
+import ImportFromCategory from './ImportFromCategory';
 
 export default function InstitutionDashboard() {
   const drawerWidth = 240;
@@ -52,7 +52,7 @@ export default function InstitutionDashboard() {
             <Route
               exact
               path={`${path}/settings/importcategory`}
-              component={AddFromCategory}
+              component={ImportFromCategory}
             />
           </Switch>
           <Box pt={4}>
