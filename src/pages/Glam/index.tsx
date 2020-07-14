@@ -14,8 +14,9 @@ import MediaItem from './MediaItem';
 import AppToolbar from './components/Toolbar';
 import Settings from './Settings';
 import ImportFromCategory from './ImportFromCategory';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
-export default function InstitutionDashboard() {
+export default function GlamDashboard() {
   const drawerWidth = 240;
   const classes = useStyles({ drawerWidth });
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
@@ -56,14 +57,31 @@ export default function InstitutionDashboard() {
             />
           </Switch>
           <Box pt={4}>
-            <Typography variant='body2' color='textSecondary' align='center'>
-              {'Copyright © '}
-              <Link color='inherit' href='https://www.wikipedia.org/'>
-                Wikimedia GLAM Dashboard
-              </Link>{' '}
-              {new Date().getFullYear()}
-              {'.'}
-            </Typography>
+            <div>
+              <Typography variant='body2' color='textSecondary' align='center'>
+                {'An open source project sponsored by '}
+                <Link
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  color='inherit'
+                  href='https://wikimedia.org.il/about-us/'
+                >
+                  Wikimedia Israel
+                </Link>
+              </Typography>
+            </div>
+            <Box mt={2}>
+              <Typography variant='body2' color='textSecondary' align='center'>
+                <Link
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  color='inherit'
+                  href='https://github.com/yonathan06/wikimedia-glam-dashboard'
+                >
+                  Open in Github <GitHubIcon style={{ fontSize: 'inherit' }} />
+                </Link>
+              </Typography>
+            </Box>
           </Box>
         </Container>
       </main>

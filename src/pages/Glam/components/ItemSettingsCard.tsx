@@ -7,7 +7,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import AlertItemDelete from '../components/AlertItemDelete';
+import AlertItemDelete from './AlertItemDelete';
 import { GlamMediaItem } from '../../../lib/models';
 
 const useStyles = makeStyles((theme: Theme) =>
