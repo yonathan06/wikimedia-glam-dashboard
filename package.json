@@ -17,6 +17,7 @@
     "@types/recharts": "^1.8.12",
     "beautiful-react-hooks": "^0.27.1",
     "date-fns": "^2.14.0",
+    "jwt-decode": "^2.2.0",
     "react": "^16.13.1",
     "react-datepicker": "^3.0.0",
     "react-dom": "^16.13.1",

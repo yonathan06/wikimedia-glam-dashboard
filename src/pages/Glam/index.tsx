@@ -11,11 +11,9 @@ import Overview from './Overview';
 import MediaItem from './MediaItem';
 import AppToolbar from './components/Toolbar';
 import Settings from './Settings';
-import ImportFromCategory from './Settings/ImportFromCategory';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { makeStyles } from '@material-ui/core';
-import GlamContext, { CurrentUser } from './context/GlamContext';
-
+import { AuthProvider } from '../../lib/glamAuth';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -50,18 +48,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function GlamDashboard() {
-  const [currentUser, setCurrentUser] = useState<CurrentUser>();
   const classes = useStyles();
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
-  let { path } = useRouteMatch();
+  let { path, params } = useRouteMatch<{ glamId: string }>();
   return (
-    <GlamContext.Provider
-      value={{
-        currentUser,
-        setCurrentUser: setCurrentUser,
-        removeCurrentUser: () => setCurrentUser(undefined),
-      }}
-    >
+    <AuthProvider glamId={params.glamId}>
       <div className={classes.root}>
         <AppBar
           position='absolute'
@@ -129,6 +120,6 @@ export default function GlamDashboard() {
           </Container>
         </main>
       </div>
-    </GlamContext.Provider>
+    </AuthProvider>
   );
 }

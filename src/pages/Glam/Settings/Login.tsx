@@ -3,10 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import GlamContext from '../context/GlamContext';
-import { useRouteMatch } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { login } from '../../../api/app';
+import { GlamAuthContext } from '../../../lib/glamAuth';
 
 interface FormData {
   username: string;
@@ -14,22 +12,25 @@ interface FormData {
 }
 
 const Login = () => {
-  const { setCurrentUser } = React.useContext(GlamContext);
-  const { params } = useRouteMatch<{ glamId: string }>();
-  const { register, handleSubmit, formState, setError, clearErrors } = useForm<
-    FormData
-  >();
+  const { login } = React.useContext(GlamAuthContext);
+  const {
+    register,
+    handleSubmit,
+    formState,
+    errors,
+    setError,
+    clearErrors,
+  } = useForm<FormData>();
   const onSubmit = async ({ username, password }: FormData) => {
     clearErrors();
     try {
-      const { token } = await login(params.glamId, username, password);
-      setCurrentUser({
-        glam_id: params.glamId,
-        username,
-        token,
-      });
+      await login(username, password);
     } catch (err) {
       setError('username', {
+        message: 'Bad username or password',
+        type: 'Bad login',
+      });
+      setError('password', {
         message: 'Bad username or password',
         type: 'Bad login',
       });
@@ -45,6 +46,7 @@ const Login = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box mb={3}>
           <TextField
+            error={!!errors.username}
             autoFocus
             margin='dense'
             id='username'
@@ -58,6 +60,7 @@ const Login = () => {
             disabled={formState.isSubmitting}
           />
           <TextField
+            error={!!errors.password}
             margin='dense'
             id='password'
             name='password'
@@ -69,6 +72,11 @@ const Login = () => {
             inputRef={register}
             disabled={formState.isSubmitting}
           />
+          {errors.username && (
+            <Typography variant='body1' component='p' color='error'>
+              Bad username or password
+            </Typography>
+          )}
         </Box>
         <Button
           color='primary'

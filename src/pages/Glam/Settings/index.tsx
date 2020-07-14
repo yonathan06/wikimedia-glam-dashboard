@@ -2,13 +2,13 @@ import React from 'react';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import GlamContext from '../context/GlamContext';
 import ItemsSettings from './ItemsSettings';
 import ImportFromCategory from './ImportFromCategory';
 import Login from './Login';
+import { GlamAuthContext } from '../../../lib/glamAuth';
 
 const Settings = () => {
-  const { currentUser } = React.useContext(GlamContext);
+  const { currentUser } = React.useContext(GlamAuthContext);
   const { path, url } = useRouteMatch();
   return (
     <div>
@@ -21,7 +21,9 @@ const Settings = () => {
         <Route exact path={path}>
           {currentUser ? <ItemsSettings /> : <Redirect to={`${url}/login`} />}
         </Route>
-        <Route exact path={`${path}/login`} component={Login} />
+        <Route exact path={`${path}/login`}>
+          {!currentUser ? <Login /> : <Redirect to={url} />}
+        </Route>
         <Route path={`${path}/importcategory`}>
           {currentUser ? (
             <ImportFromCategory />

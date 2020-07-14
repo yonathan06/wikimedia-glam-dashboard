@@ -20,7 +20,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-import GlamContext from '../context/GlamContext';
+import { GlamAuthContext } from '../../../lib/glamAuth';
 
 const drawerWidth = 240;
 
@@ -86,7 +86,7 @@ interface DrawerProps {
 }
 
 const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
-  const { currentUser } = React.useContext(GlamContext);
+  const { currentUser } = React.useContext(GlamAuthContext);
   const classes = useStyles();
   const [listOpen, setListOpen] = React.useState(false);
   const { params } = useRouteMatch<{ glamId: string }>();
@@ -159,7 +159,11 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
             startIcon={<SettingsIcon />}
           >
             Settings
-            {currentUser ? <LockOpenIcon /> : <LockIcon />}
+            {currentUser ? (
+              <LockOpenIcon fontSize='small' />
+            ) : (
+              <LockIcon fontSize='small' />
+            )}
           </Button>
         </ListItem>
       </List>
