@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
-import clsx from 'clsx';
 import { useRouteMatch } from 'react-router-dom';
 import { useTheme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import {
   LineChart,
   Line,
@@ -15,14 +13,13 @@ import {
 } from 'recharts';
 import { DateFormat } from '../../api/wikipedia';
 import { useMediaItemStats, useGlamMediaItem } from '../../api/hook';
-import { useStyles } from './styles';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
+import { AppPaper } from '../../components/AppPaper';
 
 const MediaItem = () => {
   const { params } = useRouteMatch<{ glamId: string; filePath: string }>();
   const theme = useTheme();
-  const classes = useStyles();
 
   const filePath = decodeURIComponent(params.filePath);
   const { data: fileData } = useGlamMediaItem(params.glamId, filePath);
@@ -48,7 +45,6 @@ const MediaItem = () => {
       return chartData;
     }
   }, [data]);
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -57,7 +53,7 @@ const MediaItem = () => {
         </Typography>
       </Grid>
       <Grid item xs={12} md={8} lg={9}>
-        <Paper className={fixedHeightPaper}>
+        <AppPaper>
           {chartData && (
             <ResponsiveContainer>
               <LineChart
@@ -88,7 +84,7 @@ const MediaItem = () => {
               </LineChart>
             </ResponsiveContainer>
           )}
-        </Paper>
+        </AppPaper>
       </Grid>
     </Grid>
   );

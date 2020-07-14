@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
-import { useStyles } from './styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Box from '@material-ui/core/Box';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
@@ -15,15 +13,47 @@ import AppToolbar from './components/Toolbar';
 import Settings from './Settings';
 import ImportFromCategory from './ImportFromCategory';
 import GitHubIcon from '@material-ui/icons/GitHub';
+import { makeStyles } from '@material-ui/core';
+
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+}));
 
 export default function GlamDashboard() {
-  const drawerWidth = 240;
-  const classes = useStyles({ drawerWidth });
+  const classes = useStyles();
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   let { path } = useRouteMatch();
   return (
     <div className={classes.root}>
-      <CssBaseline />
       <AppBar
         position='absolute'
         className={clsx(classes.appBar, isDrawerOpen && classes.appBarShift)}

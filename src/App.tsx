@@ -8,10 +8,12 @@ import {
 import GlamDashboard from './pages/Glam';
 import General from './pages/General';
 import { ReactQueryDevtools } from 'react-query-devtools';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 function App() {
   return (
     <>
+      <CssBaseline />
       <Router>
         <Switch>
           <Route exact path='/'>

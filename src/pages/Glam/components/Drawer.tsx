@@ -15,10 +15,29 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useGlamMediaItems } from '../../../api/hook';
-import { useStyles } from '../styles';
 
-const useItemsStyles = makeStyles((theme) => ({
-  root: {},
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme) => ({
+  drawerPaper: {
+    position: 'relative',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9),
+    },
+  },
   item: {
     display: 'flex',
     paddingTop: 0,
@@ -61,8 +80,7 @@ interface DrawerProps {
 }
 
 const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
-  const classes = useStyles({ drawerWidth });
-  const listItemClasses = useItemsStyles();
+  const classes = useStyles();
   const { params } = useRouteMatch<{ glamId: string }>();
   const { data: items, isLoading: loadingMediaItems } = useGlamMediaItems(
     params.glamId
@@ -89,8 +107,8 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
             exact
             component={CustomRouterLink}
             to={`/glam/met`}
-            activeClassName={listItemClasses.active}
-            className={listItemClasses.button}
+            activeClassName={classes.active}
+            className={classes.button}
             startIcon={<DashboardIcon />}
           >
             Dashboard
@@ -98,12 +116,12 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
         </ListItem>
         {loadingMediaItems && <CircularProgress />}
         {items?.map((item) => (
-          <ListItem key={item.file_path} className={listItemClasses.nested}>
+          <ListItem key={item.file_path} className={classes.nested}>
             <Button
               component={CustomRouterLink}
               to={`/glam/met/file/${encodeURIComponent(item.file_path)}`}
-              activeClassName={listItemClasses.active}
-              className={listItemClasses.button}
+              activeClassName={classes.active}
+              className={classes.button}
               startIcon={<ImageIcon />}
             >
               {item.title}
@@ -117,8 +135,8 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
           <Button
             component={CustomRouterLink}
             to={`/glam/met/settings`}
-            activeClassName={listItemClasses.active}
-            className={listItemClasses.button}
+            activeClassName={classes.active}
+            className={classes.button}
             startIcon={<SettingsIcon />}
           >
             Settings
