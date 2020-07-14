@@ -9,7 +9,6 @@ import AddItemDialog from '../components/AddItemDialog';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import { makeStyles } from '@material-ui/core';
 import { useGlamMediaItems } from '../../../api/hook';
-import { GlamMediaItem } from '../../../lib/models';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -21,7 +20,6 @@ const ItemsSettings = () => {
   const [addItemOpen, setAddItemOpen] = React.useState(false);
   const { params, url } = useRouteMatch<{ glamId: string }>();
   const { data: items } = useGlamMediaItems(params.glamId);
-  const handleOnDeleteItem = (item: GlamMediaItem) => {};
   const classes = useStyles();
   return (
     <>
@@ -31,11 +29,7 @@ const ItemsSettings = () => {
         </Typography>
       </Box>
       {items?.map((item) => (
-        <ItemSettingsCard
-          key={item.file_path}
-          item={item}
-          onDelete={handleOnDeleteItem}
-        />
+        <ItemSettingsCard key={item.file_path} item={item} />
       ))}
       <Button
         startIcon={<AddIcon />}

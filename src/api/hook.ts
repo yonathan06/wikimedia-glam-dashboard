@@ -3,12 +3,13 @@ import {
   fetchMediaBiweeklyStats,
   DateFormat,
 } from './wikipedia';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
   getGlamMediaItems,
   addMediaItems,
   fetchFileData,
   FileData,
+  deleteMediaItem,
 } from './app';
 import sub from 'date-fns/sub';
 import parse from 'date-fns/parse';
@@ -16,6 +17,7 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 import isSameDay from 'date-fns/isSameDay';
 import { useQuery, useMutation, queryCache } from 'react-query';
 import { GlamMediaItem, Glam } from '../lib/models';
+import { GlamAuthContext } from '../lib/glamAuth';
 
 export interface MainStats {
   mediaItemsBiweekly: {
@@ -198,9 +200,10 @@ export const useFileData = (fileName: string) => {
 };
 
 export const useAddGlamMediaItem = (glamId: string) => {
+  const { currentUser } = useContext(GlamAuthContext);
   return useMutation<GlamMediaItem[], FileData[]>(
     (items) => {
-      return addMediaItems(glamId, items);
+      return addMediaItems(glamId, items, currentUser?.token ?? '');
     },
     {
       onSuccess: (items) => {
@@ -217,6 +220,28 @@ export const useAddGlamMediaItem = (glamId: string) => {
         queryCache.setQueryData(
           [GlamMediaItemKey, glamId],
           [...(oldItems ?? []), ...items]
+        );
+      },
+    }
+  );
+};
+
+export const useDeleteMediaItem = (glamId: string, file_path: string) => {
+  const { currentUser } = useContext(GlamAuthContext);
+  return useMutation(
+    () => {
+      return deleteMediaItem(glamId, file_path, currentUser?.token ?? '');
+    },
+    {
+      onSuccess: () => {
+        queryCache.removeQueries([GlamMediaItemKey, glamId, 'item', file_path]);
+        const oldItems = queryCache
+          .getQueryData<GlamMediaItem[]>([GlamMediaItemKey, glamId])
+          ?.filter((item) => item.file_path !== file_path);
+
+        queryCache.setQueryData(
+          [GlamMediaItemKey, glamId],
+          [...(oldItems ?? [])]
         );
       },
     }

@@ -8,17 +8,44 @@ export async function getGlamMediaItems(glamId: string) {
   return data.items as GlamMediaItem[];
 }
 
-export async function addMediaItems(glamId: string, items: FileData[]) {
+export async function addMediaItems(
+  glamId: string,
+  items: FileData[],
+  token: string
+) {
   const response = await fetch(`${BaseUrl}/glam/${glamId}/item`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
+      authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ items }),
   });
   const data = await response.json();
   if (!response.ok) {
     throw new Error('Error adding item:' + JSON.stringify(data));
+  }
+  return data.items;
+}
+
+export async function deleteMediaItem(
+  glamId: string,
+  file_path: string,
+  token: string
+) {
+  const response = await fetch(
+    `${BaseUrl}/glam/${glamId}/item/${encodeURIComponent(file_path)}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'content-type': 'application/json',
+        authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error('Error deleting item:' + JSON.stringify(data));
   }
   return data.items;
 }

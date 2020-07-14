@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -10,6 +10,7 @@ import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import AlertItemDelete from './AlertItemDelete';
 import { GlamMediaItem } from '../../../lib/models';
+import { useDeleteMediaItem } from '../../../api/hook';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flex: '0 0 auto',
       height: 100,
+      overflow: 'hidden',
     },
     cover: {
       width: 151,
@@ -37,22 +39,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface ItemSettingsCardProps {
   item: Partial<GlamMediaItem>;
-  onDelete?: (item: GlamMediaItem) => void;
   preview?: boolean;
 }
 
-export const ItemSettingsCard = ({
-  item,
-  onDelete,
-  preview,
-}: ItemSettingsCardProps) => {
+export const ItemSettingsCard = ({ item, preview }: ItemSettingsCardProps) => {
+  const { params } = useRouteMatch<{ glamId: string }>();
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+  const [mutate] = useDeleteMediaItem(params.glamId, item.file_path ?? '');
   const classes = useStyles();
   const handleItemDelete = () => {
     setDeleteDialogOpen(false);
-    if (onDelete) {
-      onDelete(item as GlamMediaItem);
-    }
+    mutate();
   };
   return (
     <>
