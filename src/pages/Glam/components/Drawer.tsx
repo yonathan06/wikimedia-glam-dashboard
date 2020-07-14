@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { NavLink, NavLinkProps, useRouteMatch } from 'react-router-dom';
 import clsx from 'clsx';
 import { makeStyles, colors } from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -6,15 +7,17 @@ import ImageIcon from '@material-ui/icons/Image';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TrendingUpIcon from '@material-ui/icons/TrendingUp';
 import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import { NavLink, NavLinkProps, useRouteMatch } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
+import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import PermMediaIcon from '@material-ui/icons/PermMedia';
 import { useGlamMediaItems } from '../../../api/hook';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 
 const drawerWidth = 240;
 
@@ -81,10 +84,9 @@ interface DrawerProps {
 
 const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
   const classes = useStyles();
+  const [listOpen, setListOpen] = React.useState(false);
   const { params } = useRouteMatch<{ glamId: string }>();
-  const { data: items, isLoading: loadingMediaItems } = useGlamMediaItems(
-    params.glamId
-  );
+  const { data: items } = useGlamMediaItems(params.glamId);
 
   return (
     <Drawer
@@ -114,20 +116,33 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
             Dashboard
           </Button>
         </ListItem>
-        {loadingMediaItems && <CircularProgress />}
-        {items?.map((item) => (
-          <ListItem key={item.file_path} className={classes.nested}>
-            <Button
-              component={CustomRouterLink}
-              to={`/glam/met/file/${encodeURIComponent(item.file_path)}`}
-              activeClassName={classes.active}
-              className={classes.button}
-              startIcon={<ImageIcon />}
-            >
-              {item.title}
-            </Button>
-          </ListItem>
-        ))}
+        <ListItem>
+          <Button
+            onClick={() => setListOpen(!listOpen)}
+            className={classes.button}
+            startIcon={<PermMediaIcon />}
+          >
+            Media Items
+            {listOpen ? <ExpandLess /> : <ExpandMore />}
+          </Button>
+        </ListItem>
+        <Collapse in={listOpen} timeout='auto' unmountOnExit>
+          <List component='div' disablePadding>
+            {items?.map((item) => (
+              <ListItem key={item.file_path} className={classes.nested}>
+                <Button
+                  component={CustomRouterLink}
+                  to={`/glam/met/file/${encodeURIComponent(item.file_path)}`}
+                  activeClassName={classes.active}
+                  className={classes.button}
+                  startIcon={<ImageIcon />}
+                >
+                  {item.title}
+                </Button>
+              </ListItem>
+            ))}
+          </List>
+        </Collapse>
       </List>
       <Divider />
       <List>

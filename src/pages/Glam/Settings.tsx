@@ -1,12 +1,13 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 import AddIcon from '@material-ui/icons/Add';
 import { useGlamMediaItems } from '../../api/hook';
 import { ItemSettingsCard } from './components/ItemSettingsCard';
 import AddItemDialog from './components/AddItemDialog';
 import { useRouteMatch, Link } from 'react-router-dom';
 import ListAltIcon from '@material-ui/icons/ListAlt';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import { GlamMediaItem } from '../../lib/models';
 
 const useStyles = makeStyles((theme) => ({
@@ -23,6 +24,16 @@ const Settings = () => {
   const classes = useStyles();
   return (
     <div>
+      <Box mb={3}>
+        <Typography variant='h4' component='h4'>
+          Settings
+        </Typography>
+      </Box>
+      <Box mb={3}>
+        <Typography variant='h6' component='h6'>
+          Media items
+        </Typography>
+      </Box>
       {items?.map((item) => (
         <ItemSettingsCard
           key={item.file_path}

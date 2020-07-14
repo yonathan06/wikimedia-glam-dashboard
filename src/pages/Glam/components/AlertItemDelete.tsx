@@ -32,7 +32,7 @@ const AlertItemDelete = ({ open, onClose, onAgree }: AlertItemDeleteProps) => {
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={onAgree} color='secondary' variant='outlined'>
-          Delete
+          Remove
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { Theme, createStyles, makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import AlertItemDelete from './AlertItemDelete';
 import { GlamMediaItem } from '../../../lib/models';
@@ -64,13 +65,20 @@ export const ItemSettingsCard = ({
         <div className={classes.details}>
           <CardContent className={classes.content}>
             <Typography component='h6' variant='h6'>
-              {item.title}
+              <Link
+                href={item.page_url}
+                target='_blank'
+                rel='noopener noreferrer'
+                color='textPrimary'
+              >
+                {item.title}
+              </Link>
             </Typography>
           </CardContent>
           {!preview && (
             <CardActions>
               <Button
-                component={Link}
+                component={RouterLink}
                 to={`/glam/met/file/${encodeURIComponent(
                   item.file_path ?? ''
                 )}`}
