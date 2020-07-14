@@ -51,3 +51,21 @@ export async function fetchFileListByCategory(category: string, next?: string) {
   const data: CategoryFileMembersResponse = await response.json();
   return data;
 }
+
+export async function login(
+  glam_id: string,
+  username: string,
+  password: string
+) {
+  const response = await fetch(`${BaseUrl}/glam/${glam_id}/login`, {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({ username, password }),
+  });
+  if (!response.ok) {
+    throw new Error('Bad login');
+  }
+  return await response.json();
+}

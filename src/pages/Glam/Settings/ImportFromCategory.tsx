@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router-dom';
-import { useGlamMediaItems, useAddGlamMediaItem } from '../../api/hook';
+import { useGlamMediaItems, useAddGlamMediaItem } from '../../../api/hook';
 import { useForm } from 'react-hook-form';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -12,8 +12,8 @@ import {
   fetchFileListByCategory,
   CategoryFileMembersResponse,
   FileData,
-} from '../../api/app';
-import CategoryItemPreview from './components/CategoryItemPreview';
+} from '../../../api/app';
+import CategoryItemPreview from '../components/CategoryItemPreview';
 import { useViewportSpy } from 'beautiful-react-hooks';
 
 const useStyles = makeStyles((theme) => ({

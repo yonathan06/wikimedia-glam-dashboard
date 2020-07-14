@@ -11,9 +11,10 @@ import Overview from './Overview';
 import MediaItem from './MediaItem';
 import AppToolbar from './components/Toolbar';
 import Settings from './Settings';
-import ImportFromCategory from './ImportFromCategory';
+import ImportFromCategory from './Settings/ImportFromCategory';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { makeStyles } from '@material-ui/core';
+import GlamContext, { CurrentUser } from './context/GlamContext';
 
 const drawerWidth = 240;
 
@@ -49,72 +50,85 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function GlamDashboard() {
+  const [currentUser, setCurrentUser] = useState<CurrentUser>();
   const classes = useStyles();
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   let { path } = useRouteMatch();
   return (
-    <div className={classes.root}>
-      <AppBar
-        position='absolute'
-        className={clsx(classes.appBar, isDrawerOpen && classes.appBarShift)}
-      >
-        <AppToolbar
+    <GlamContext.Provider
+      value={{
+        currentUser,
+        setCurrentUser: setCurrentUser,
+        removeCurrentUser: () => setCurrentUser(undefined),
+      }}
+    >
+      <div className={classes.root}>
+        <AppBar
+          position='absolute'
+          className={clsx(classes.appBar, isDrawerOpen && classes.appBarShift)}
+        >
+          <AppToolbar
+            drawerWidth={drawerWidth}
+            isDrawerOpen={isDrawerOpen}
+            openDrawer={() => setIsDrawerOpen(true)}
+          />
+        </AppBar>
+        <AppDrawer
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
           drawerWidth={drawerWidth}
-          isDrawerOpen={isDrawerOpen}
-          openDrawer={() => setIsDrawerOpen(true)}
         />
-      </AppBar>
-      <AppDrawer
-        open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        drawerWidth={drawerWidth}
-      />
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth='lg' className={classes.container}>
-          <Switch>
-            <Route exact path={path} component={Overview} />
-            <Route
-              exact
-              path={`${path}/file/:filePath`}
-              component={MediaItem}
-            />
-            <Route exact path={`${path}/settings`} component={Settings} />
-            <Route
-              exact
-              path={`${path}/settings/importcategory`}
-              component={ImportFromCategory}
-            />
-          </Switch>
-          <Box pt={4}>
-            <div>
-              <Typography variant='body2' color='textSecondary' align='center'>
-                {'An open source project sponsored by '}
-                <Link
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  color='inherit'
-                  href='https://wikimedia.org.il/about-us/'
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          <Container maxWidth='lg' className={classes.container}>
+            <Switch>
+              <Route exact path={path} component={Overview} />
+              <Route
+                exact
+                path={`${path}/file/:filePath`}
+                component={MediaItem}
+              />
+              <Route path={`${path}/settings`} component={Settings} />
+            </Switch>
+            <Box pt={4}>
+              <div>
+                <Typography
+                  variant='body2'
+                  color='textSecondary'
+                  align='center'
                 >
-                  Wikimedia Israel
-                </Link>
-              </Typography>
-            </div>
-            <Box mt={2}>
-              <Typography variant='body2' color='textSecondary' align='center'>
-                <Link
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  color='inherit'
-                  href='https://github.com/yonathan06/wikimedia-glam-dashboard'
+                  {'An open source project sponsored by '}
+                  <Link
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    color='inherit'
+                    href='https://wikimedia.org.il/about-us/'
+                  >
+                    Wikimedia Israel
+                  </Link>
+                </Typography>
+              </div>
+              <Box mt={2}>
+                <Typography
+                  variant='body2'
+                  color='textSecondary'
+                  align='center'
                 >
-                  Open in Github <GitHubIcon style={{ fontSize: 'inherit' }} />
-                </Link>
-              </Typography>
+                  <Link
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    color='inherit'
+                    href='https://github.com/yonathan06/wikimedia-glam-dashboard'
+                  >
+                    Open in Github{' '}
+                    <GitHubIcon style={{ fontSize: 'inherit' }} />
+                  </Link>
+                </Typography>
+              </Box>
             </Box>
-          </Box>
-        </Container>
-      </main>
-    </div>
+          </Container>
+        </main>
+      </div>
+    </GlamContext.Provider>
   );
 }
