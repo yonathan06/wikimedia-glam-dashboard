@@ -28,28 +28,31 @@ const ItemsSettings = () => {
           Media items
         </Typography>
       </Box>
+      <Box mb={2}>
+        <Button
+          startIcon={<AddIcon />}
+          color='primary'
+          variant='contained'
+          onClick={() => setAddItemOpen(true)}
+          className={classes.button}
+        >
+          Add item
+        </Button>
+        <Button
+          startIcon={<ListAltIcon />}
+          color='primary'
+          variant='outlined'
+          component={Link}
+          to={`${url}/importcategory`}
+          className={classes.button}
+        >
+          Import from category
+        </Button>
+      </Box>
       {items?.map((item) => (
         <ItemSettingsCard key={item.file_path} item={item} />
       ))}
-      <Button
-        startIcon={<AddIcon />}
-        color='primary'
-        variant='contained'
-        onClick={() => setAddItemOpen(true)}
-        className={classes.button}
-      >
-        Add item
-      </Button>
-      <Button
-        startIcon={<ListAltIcon />}
-        color='primary'
-        variant='outlined'
-        component={Link}
-        to={`${url}/importcategory`}
-        className={classes.button}
-      >
-        Import from category
-      </Button>
+
       <AddItemDialog open={addItemOpen} onClose={() => setAddItemOpen(false)} />
     </>
   );
