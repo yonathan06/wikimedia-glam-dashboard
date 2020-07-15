@@ -1,13 +1,12 @@
-import React from 'react';
-import { ItemSettingsCard } from './ItemSettingsCard';
-import { GlamMediaItem } from '../../../lib/models';
-import { FileData } from '../../../api/app';
-import { makeStyles, Button } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import { useAddGlamMediaItem } from '../../../api/hook';
-import { useRouteMatch } from 'react-router-dom';
-import Chip from '@material-ui/core/Chip';
-import DoneIcon from '@material-ui/icons/Done';
+import React from "react";
+import { ItemSettingsCard } from "./ItemSettingsCard";
+import { GlamMediaItem } from "../../../lib/models";
+import { FileData } from "../../../api/app";
+import { makeStyles, Button } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import DoneIcon from "@material-ui/icons/Done";
+import { useAddGlamMediaItem } from "../../../api/hook";
+import { useRouteMatch } from "react-router-dom";
 
 interface CategoryItemPreviewProps {
   categoryItem: FileData;
@@ -16,13 +15,22 @@ interface CategoryItemPreviewProps {
 
 const useStyles = makeStyles((theme) => ({
   itemHolder: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "start",
+    justifyContent: "end",
   },
   addButton: {
-    marginLeft: theme.spacing(1),
+    marginTop: theme.spacing(1),
   },
 }));
+
+const StartIcon = ({ exists }: { exists: boolean }) => {
+  if (exists) {
+    return <DoneIcon />;
+  }
+  return <AddIcon />;
+};
 
 const CategoryItemPreview = ({
   categoryItem,
@@ -40,21 +48,15 @@ const CategoryItemPreview = ({
   return (
     <div className={classes.itemHolder}>
       <ItemSettingsCard item={categoryItem} preview />
-      {!exists && (
-        <Button
-          startIcon={<AddIcon />}
-          color='primary'
-          variant='contained'
-          onClick={handleOnAdd}
-          className={classes.addButton}
-          disabled={isLoading}
-        >
-          Add item
-        </Button>
-      )}
-      {exists && (
-        <Chip label='Added' deleteIcon={<DoneIcon />} variant='outlined' />
-      )}
+      <Button
+        startIcon={<StartIcon exists={exists} />}
+        color="primary"
+        onClick={handleOnAdd}
+        className={classes.addButton}
+        disabled={isLoading || exists}
+      >
+        {!exists ? "Add item" : "Added"}
+      </Button>
     </div>
   );
 };

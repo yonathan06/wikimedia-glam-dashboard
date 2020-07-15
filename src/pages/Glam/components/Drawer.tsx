@@ -126,7 +126,7 @@ const AppDrawer = ({ open, onClose, drawerWidth }: DrawerProps) => {
             className={classes.button}
             startIcon={<PermMediaIcon />}
           >
-            Media Items
+            Media Items ({items?.length ?? 0})
             {listOpen ? <ExpandLess /> : <ExpandMore />}
           </Button>
         </ListItem>

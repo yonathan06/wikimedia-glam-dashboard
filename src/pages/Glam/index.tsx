@@ -8,12 +8,14 @@ import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import AppDrawer from './components/Drawer';
 import Overview from './Overview';
-import MediaItem from './MediaItem';
 import AppToolbar from './components/Toolbar';
-import Settings from './Settings';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import { makeStyles } from '@material-ui/core';
 import { AuthProvider } from '../../lib/glamAuth';
+
+const MediaItem = React.lazy(() => import('./MediaItem'));
+const Settings = React.lazy(() => import('./Settings'));
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({

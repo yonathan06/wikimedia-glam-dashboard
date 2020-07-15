@@ -1,14 +1,15 @@
-import React from 'react';
-import { useRouteMatch, Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import AddIcon from '@material-ui/icons/Add';
-import { ItemSettingsCard } from '../components/ItemSettingsCard';
-import AddItemDialog from '../components/AddItemDialog';
-import ListAltIcon from '@material-ui/icons/ListAlt';
-import { makeStyles } from '@material-ui/core';
-import { useGlamMediaItems } from '../../../api/hook';
+import React from "react";
+import { useRouteMatch, Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
+import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import AddIcon from "@material-ui/icons/Add";
+import { ItemSettingsCard } from "../components/ItemSettingsCard";
+import AddItemDialog from "../components/AddItemDialog";
+import ListAltIcon from "@material-ui/icons/ListAlt";
+import { makeStyles } from "@material-ui/core";
+import { useGlamMediaItems } from "../../../api/hook";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -24,15 +25,15 @@ const ItemsSettings = () => {
   return (
     <>
       <Box mb={3}>
-        <Typography variant='h6' component='h6'>
+        <Typography variant="h6" component="h6">
           Media items
         </Typography>
       </Box>
       <Box mb={2}>
         <Button
           startIcon={<AddIcon />}
-          color='primary'
-          variant='contained'
+          color="primary"
+          variant="contained"
           onClick={() => setAddItemOpen(true)}
           className={classes.button}
         >
@@ -40,8 +41,8 @@ const ItemsSettings = () => {
         </Button>
         <Button
           startIcon={<ListAltIcon />}
-          color='primary'
-          variant='outlined'
+          color="primary"
+          variant="outlined"
           component={Link}
           to={`${url}/importcategory`}
           className={classes.button}
@@ -49,9 +50,13 @@ const ItemsSettings = () => {
           Import from category
         </Button>
       </Box>
-      {items?.map((item) => (
-        <ItemSettingsCard key={item.file_path} item={item} />
-      ))}
+      <Grid container spacing={3}>
+        {items?.map((item) => (
+          <Grid key={item.file_path} item xs={12} md={6} lg={4}>
+            <ItemSettingsCard item={item} />
+          </Grid>
+        ))}
+      </Grid>
 
       <AddItemDialog open={addItemOpen} onClose={() => setAddItemOpen(false)} />
     </>
